@@ -1,0 +1,1852 @@
+<!DOCTYPE html>
+<html lang="tr" id="root">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>StormWind — Genshin Rehberi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ─── WELCOME + UI ENHANCEMENTS ─── */
+/* ═══════ WELCOME SCREEN ═══════ */
+#welcomeScreen{position:fixed;inset:0;z-index:9000;background:#060810;display:flex;align-items:center;justify-content:center;overflow:hidden}
+#welcomeScreen.out{animation:wsFadeOut .9s cubic-bezier(.4,0,.2,1) forwards}
+@keyframes wsFadeOut{to{opacity:0;transform:scale(1.03);pointer-events:none}}
+#welcomeScreen.done{display:none}
+.ws-aurora::before,.ws-aurora::after{content:'';position:absolute;border-radius:50%;filter:blur(80px);opacity:.35;animation:wsOrb 8s ease-in-out infinite alternate}
+.ws-aurora::before{width:600px;height:400px;top:-10%;left:-10%;background:radial-gradient(ellipse,#A8D8EA,transparent 70%)}
+.ws-aurora::after{width:500px;height:500px;bottom:-15%;right:-10%;background:radial-gradient(ellipse,#C9B1D9,transparent 70%);animation-delay:-4s}
+@keyframes wsOrb{from{transform:translate(0,0) scale(1)}to{transform:translate(40px,30px) scale(1.1)}}
+.ws-star{position:absolute;width:2px;height:2px;background:#fff;border-radius:50%;animation:wsTwinkle var(--d,3s) ease-in-out infinite}
+@keyframes wsTwinkle{0%,100%{opacity:.1}50%{opacity:.9}}
+.ws-content{position:relative;z-index:1;text-align:center;padding:2.5rem 2rem;max-width:520px;width:100%}
+.ws-badge{display:inline-flex;align-items:center;gap:.5rem;background:rgba(168,216,234,.08);border:1px solid rgba(168,216,234,.2);border-radius:100px;padding:.36rem 1rem;font-size:.7rem;font-weight:700;color:var(--a);letter-spacing:.12em;text-transform:uppercase;margin-bottom:1.4rem;animation:wsSlide .8s .2s both}
+.ws-logo{font-family:'Cinzel',serif;font-size:3.2rem;font-weight:700;background:linear-gradient(135deg,#A8D8EA 0%,#C9B1D9 45%,#FFE4A0 90%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.1;animation:wsSlide .8s .35s both;margin-bottom:.5rem}
+.ws-sub{font-size:.92rem;color:#8b949e;line-height:1.7;animation:wsSlide .8s .5s both;margin-bottom:2rem}
+.ws-question{font-size:.78rem;color:#6e7681;margin-bottom:.85rem;animation:wsSlide .8s .62s both;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.ws-elements{display:flex;justify-content:center;gap:.55rem;flex-wrap:wrap;margin-bottom:2rem;animation:wsSlide .8s .7s both}
+.ws-el{background:none;border:1.5px solid rgba(255,255,255,.1);border-radius:14px;padding:.6rem .75rem;cursor:pointer;transition:all .25s;display:flex;flex-direction:column;align-items:center;gap:.28rem;color:#6e7681;font-family:'Nunito',sans-serif;font-size:.65rem;font-weight:700;min-width:56px}
+.ws-el:hover{transform:translateY(-3px)}
+.ws-el.picked{transform:translateY(-3px) scale(1.06)}
+.ws-el.el-anemo:hover,.ws-el.el-anemo.picked{border-color:#7ec8a4;color:#7ec8a4;background:rgba(126,200,164,.1);box-shadow:0 4px 20px rgba(126,200,164,.2)}
+.ws-el.el-pyro:hover,.ws-el.el-pyro.picked{border-color:#ef7a2b;color:#ef7a2b;background:rgba(239,122,43,.1);box-shadow:0 4px 20px rgba(239,122,43,.2)}
+.ws-el.el-hydro:hover,.ws-el.el-hydro.picked{border-color:#4cc2f1;color:#4cc2f1;background:rgba(76,194,241,.1);box-shadow:0 4px 20px rgba(76,194,241,.2)}
+.ws-el.el-electro:hover,.ws-el.el-electro.picked{border-color:#c77dff;color:#c77dff;background:rgba(199,125,255,.1);box-shadow:0 4px 20px rgba(199,125,255,.2)}
+.ws-el.el-cryo:hover,.ws-el.el-cryo.picked{border-color:#9ed9f7;color:#9ed9f7;background:rgba(158,217,247,.1);box-shadow:0 4px 20px rgba(158,217,247,.2)}
+.ws-el.el-geo:hover,.ws-el.el-geo.picked{border-color:#f0b232;color:#f0b232;background:rgba(240,178,50,.1);box-shadow:0 4px 20px rgba(240,178,50,.2)}
+.ws-el.el-dendro:hover,.ws-el.el-dendro.picked{border-color:#a5c23d;color:#a5c23d;background:rgba(165,194,61,.1);box-shadow:0 4px 20px rgba(165,194,61,.2)}
+.ws-el.el-moon:hover,.ws-el.el-moon.picked{border-color:#b8c9f5;color:#b8c9f5;background:rgba(184,201,245,.1);box-shadow:0 4px 20px rgba(184,201,245,.2)}
+.ws-start{background:linear-gradient(135deg,rgba(168,216,234,.18),rgba(201,177,217,.14));border:1.5px solid rgba(168,216,234,.38);border-radius:14px;padding:.88rem 2.4rem;font-family:'Cinzel',serif;font-size:.9rem;font-weight:700;color:var(--a);cursor:pointer;letter-spacing:.08em;transition:all .3s;animation:wsSlide .8s .85s both;position:relative;overflow:hidden}
+.ws-start:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(168,216,234,.22);border-color:rgba(168,216,234,.55)}
+@keyframes wsSlide{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+
+/* ═══════ CARD HOVER GLOW ═══════ */
+.char-card{transition:transform .28s cubic-bezier(.34,1.56,.64,1),box-shadow .28s,border-color .28s !important}
+.char-card:hover{transform:translateY(-5px) scale(1.012) !important;box-shadow:0 16px 50px rgba(0,0,0,.55),0 0 0 1px rgba(168,216,234,.22),0 4px 28px rgba(168,216,234,.1) !important}
+
+/* ═══════ REVEAL ANIMATION ═══════ */
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .55s cubic-bezier(.4,0,.2,1),transform .55s cubic-bezier(.4,0,.2,1)}
+.reveal.visible{opacity:1;transform:none}
+.reveal-delay-1{transition-delay:.1s}
+.reveal-delay-2{transition-delay:.18s}
+.reveal-delay-3{transition-delay:.26s}
+
+/* ═══════ HERO AURORA ═══════ */
+.hero-aurora{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.ha-1,.ha-2,.ha-3{position:absolute;border-radius:50%;filter:blur(90px);opacity:.18}
+.ha-1{width:70%;height:120%;top:-30%;left:-20%;background:radial-gradient(ellipse,rgba(168,216,234,.6),transparent 60%);animation:haFloat1 12s ease-in-out infinite alternate}
+.ha-2{width:60%;height:80%;top:20%;right:-20%;background:radial-gradient(ellipse,rgba(201,177,217,.5),transparent 60%);animation:haFloat2 15s ease-in-out infinite alternate}
+.ha-3{width:50%;height:70%;bottom:-20%;left:20%;background:radial-gradient(ellipse,rgba(255,228,160,.35),transparent 65%);animation:haFloat1 10s 3s ease-in-out infinite alternate}
+@keyframes haFloat1{from{transform:translate(0,0) scale(1)}to{transform:translate(30px,20px) scale(1.08)}}
+@keyframes haFloat2{from{transform:translate(0,0) scale(1)}to{transform:translate(-25px,15px) scale(1.06)}}
+
+/* ═══════ MOON BADGE FOR NOD-KRAI ═══════ */
+.region-moon-badge{display:inline-flex;align-items:center;gap:.3rem;background:rgba(184,201,245,.08);border:1px solid rgba(184,201,245,.18);border-radius:100px;padding:.18rem .65rem;font-size:.6rem;font-weight:700;color:#b8c9f5;margin-left:.45rem;vertical-align:middle}
+
+/* ═══════ MODAL ENHANCEMENT ═══════ */
+.modal{animation:modalIn .35s cubic-bezier(.34,1.56,.64,1)}
+@keyframes modalIn{from{opacity:0;transform:translateY(28px) scale(.97)}to{opacity:1;transform:none}}
+
+/* ═══════ SECTION HEADERS ═══════ */
+.section-title{position:relative;display:inline-block}
+.section-title::after{content:'';display:block;width:40%;height:2px;background:linear-gradient(90deg,var(--a),transparent);margin-top:.25rem;border-radius:2px}
+
+
+/* ─── THEME VARS ─── */
+:root{
+  --a:#A8D8EA;--mint:#B5EAD7;--lav:#C9B1D9;--gold:#FFE4A0;--cream:#F5F0E8;
+  --bg:#0d1117;--bg2:#161b22;--bg3:#21262d;--bg4:#2d333b;
+  --tx:#e6edf3;--tx2:#8b949e;--tx3:#6e7681;
+  --br:rgba(168,216,234,.13);--br2:rgba(168,216,234,.25);
+  --glow:rgba(168,216,234,.18);--shadow:0 12px 40px rgba(0,0,0,.5);
+  --ce:#7ec8a4;--ch:#4cc2f1;--cp:#ef7a2b;--cc:#9ed9f7;--cE:#c77dff;--cg:#f0b232;--cd:#a5c23d;
+  --nav:rgba(13,17,23,.88);--surface:rgba(22,27,34,.96);
+}
+html[data-t=light]{
+  --bg:#eef2f7;--bg2:#ffffff;--bg3:#f0f4f8;--bg4:#e2e8f0;
+  --tx:#1a2332;--tx2:#4a5568;--tx3:#718096;
+  --br:rgba(100,140,180,.18);--br2:rgba(100,140,180,.32);
+  --glow:rgba(168,216,234,.25);--shadow:0 12px 40px rgba(0,0,0,.12);
+  --nav:rgba(238,242,247,.92);--surface:rgba(255,255,255,.98);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;overflow-x:hidden;transition:background .35s,color .35s}
+
+/* ─── ANIMATED BACKGROUND ─── */
+.scene-bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.orb{position:absolute;border-radius:50%;filter:blur(80px);animation:orbDrift 18s ease-in-out infinite}
+.orb1{width:520px;height:520px;background:rgba(168,216,234,.06);top:-15%;left:-10%;animation-delay:0s}
+.orb2{width:400px;height:400px;background:rgba(201,177,217,.05);bottom:-10%;right:-8%;animation-delay:-7s}
+.orb3{width:300px;height:300px;background:rgba(255,228,160,.04);top:40%;left:55%;animation-delay:-12s}
+html[data-t=light] .orb1{background:rgba(168,216,234,.12)}
+html[data-t=light] .orb2{background:rgba(201,177,217,.09)}
+html[data-t=light] .orb3{background:rgba(255,228,160,.08)}
+@keyframes orbDrift{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(40px,-30px) scale(1.05)}66%{transform:translate(-25px,20px) scale(.97)}}
+
+/* ─── PARTICLES (rising from bottom) ─── */
+.ptcl-canvas{position:fixed;bottom:0;left:0;right:0;height:100%;z-index:0;pointer-events:none;overflow:hidden}
+.ptcl{position:absolute;bottom:-10px;border-radius:50%;opacity:0;animation:riseUp var(--d,10s) ease-in var(--dl,0s) infinite}
+@keyframes riseUp{
+  0%{opacity:0;transform:translateY(0) translateX(0) scale(.5)}
+  10%{opacity:.6}
+  80%{opacity:.25}
+  100%{opacity:0;transform:translateY(-100vh) translateX(var(--dx,20px)) scale(1.5)}
+}
+
+/* ─── LOADER ─── */
+#loader{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.8rem;transition:opacity .7s,visibility .7s}
+#loader.gone{opacity:0;visibility:hidden}
+.ld-logo{font-family:'Cinzel',serif;font-size:2.8rem;font-weight:700;background:linear-gradient(135deg,var(--a),var(--lav),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:ldPulse 1.6s ease infinite}
+@keyframes ldPulse{0%,100%{opacity:.6;transform:scale(.96)}50%{opacity:1;transform:scale(1.04)}}
+.ld-bar-wrap{width:240px;height:3px;background:var(--bg3);border-radius:2px;overflow:hidden}
+.ld-bar{height:100%;width:0;background:linear-gradient(90deg,var(--a),var(--lav),var(--gold));border-radius:2px;transition:width .1s}
+.ld-sub{font-size:.78rem;color:var(--tx3);letter-spacing:.16em;text-transform:uppercase;font-weight:700}
+.ld-emojis{display:flex;gap:1.2rem;font-size:1.5rem;opacity:.5}
+
+/* ─── NAV ─── */
+nav{position:sticky;top:0;z-index:200;height:60px;backdrop-filter:blur(28px) saturate(180%);background:var(--nav);border-bottom:1px solid var(--br);display:flex;align-items:center;padding:0 1.4rem;gap:.55rem}
+.nav-logo{font-family:'Cinzel',serif;font-weight:700;font-size:1.08rem;line-height:1.18;letter-spacing:.04em;background:linear-gradient(135deg,var(--a),var(--lav));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;cursor:pointer;flex-shrink:0;white-space:nowrap}
+.nav-logo small{display:block;font-size:.53em;letter-spacing:.18em;font-weight:400;opacity:.7}
+.nav-links{list-style:none;display:flex;gap:.08rem;margin-left:.4rem;overflow-x:auto;scrollbar-width:none}
+.nav-links::-webkit-scrollbar{display:none}
+.nav-links button{color:var(--tx2);background:none;border:none;font-family:'Nunito',sans-serif;font-size:.76rem;font-weight:700;padding:.34rem .7rem;border-radius:8px;transition:all .2s;white-space:nowrap;cursor:pointer}
+.nav-links button:hover{color:var(--a);background:rgba(168,216,234,.08)}
+.nav-links button.on{color:var(--a);background:rgba(168,216,234,.12)}
+.nav-r{margin-left:auto;display:flex;align-items:center;gap:.4rem;flex-shrink:0}
+/* search */
+.sw{position:relative}
+.nsearch{display:flex;align-items:center;gap:.4rem;background:var(--bg3);border:1px solid var(--br);border-radius:10px;padding:.33rem .68rem;width:168px;transition:all .2s}
+.nsearch:focus-within{border-color:var(--a);box-shadow:0 0 0 3px rgba(168,216,234,.1)}
+.nsearch input{background:none;border:none;outline:none;color:var(--tx);font-family:'Nunito',sans-serif;font-size:.78rem;width:100%}
+.nsearch input::placeholder{color:var(--tx3)}
+.sh-drop{position:absolute;top:calc(100% + 5px);left:0;right:0;background:var(--bg2);border:1px solid var(--br2);border-radius:12px;padding:.45rem;z-index:300;display:none;box-shadow:var(--shadow)}
+.sw:focus-within .sh-drop.has{display:block}
+.sh-hd{display:flex;align-items:center;justify-content:space-between;padding:.15rem .38rem .4rem;font-size:.61rem;text-transform:uppercase;letter-spacing:.12em;color:var(--tx3);font-weight:700}
+.sh-clr{background:none;border:none;color:var(--tx3);font-size:.61rem;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:700}
+.sh-clr:hover{color:#ff8080}
+.sh-it{padding:.37rem .5rem;border-radius:7px;cursor:pointer;font-size:.76rem;color:var(--tx2);transition:all .2s;font-weight:600;display:flex;align-items:center;gap:.45rem}
+.sh-it:hover{background:rgba(168,216,234,.08);color:var(--tx)}
+/* notif */
+.nw{position:relative}
+.nbell{background:none;border:1px solid var(--br);border-radius:9px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;color:var(--tx2);font-size:.9rem;position:relative}
+.nbell:hover{border-color:var(--a);color:var(--a)}
+.ndot{position:absolute;top:5px;right:5px;width:7px;height:7px;border-radius:50%;background:#ff6b6b;border:2px solid var(--bg);display:none}
+.ndot.on{display:block;animation:npulse 1.5s infinite}
+@keyframes npulse{0%,100%{transform:scale(1)}50%{transform:scale(1.35)}}
+.npanel{position:absolute;top:calc(100% + 8px);right:0;width:295px;background:var(--bg2);border:1px solid var(--br2);border-radius:16px;padding:.72rem;z-index:400;display:none;box-shadow:var(--shadow)}
+.npanel.open{display:block;animation:dropin .22s ease}
+@keyframes dropin{from{opacity:0;transform:translateY(-7px)}to{opacity:1;transform:none}}
+.nhd{display:flex;align-items:center;justify-content:space-between;margin-bottom:.55rem}
+.nhd h4{font-family:'Cinzel',serif;font-size:.78rem;font-weight:700}
+.nmark{background:none;border:none;font-size:.65rem;color:var(--a);cursor:pointer;font-family:'Nunito',sans-serif;font-weight:700}
+.nitem{display:flex;gap:.55rem;padding:.45rem .42rem;border-radius:8px;margin-bottom:.25rem;cursor:pointer;transition:background .2s}
+.nitem:hover{background:rgba(168,216,234,.06)}
+.nitem.unread{background:rgba(168,216,234,.04)}
+.nico{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:.88rem;flex-shrink:0}
+.nico.i{background:rgba(168,216,234,.12)}.nico.s{background:rgba(181,234,215,.12)}.nico.w{background:rgba(255,228,160,.1)}
+.nbody strong{display:block;font-size:.73rem;font-weight:700;margin-bottom:.05rem}
+.nbody span{font-size:.65rem;color:var(--tx2)}
+.ntime{font-size:.59rem;color:var(--tx3);margin-top:.07rem}
+.nudot{width:6px;height:6px;border-radius:50%;background:var(--a);margin-left:auto;margin-top:.32rem;flex-shrink:0}
+/* icon btns */
+.icon-btn{background:var(--bg3);border:1px solid var(--br);border-radius:9px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;font-size:1rem}
+.icon-btn:hover{border-color:var(--a);transform:scale(1.06)}
+.tools-btn{display:flex;align-items:center;gap:.32rem;background:rgba(168,216,234,.08);border:1px solid var(--br);border-radius:9px;padding:.34rem .72rem;font-family:'Nunito',sans-serif;font-size:.75rem;font-weight:700;color:var(--a);cursor:pointer;transition:all .2s;white-space:nowrap}
+.tools-btn:hover{background:rgba(168,216,234,.15)}
+.ham{display:none;background:none;border:none;cursor:pointer;padding:.38rem;flex-direction:column;gap:4px}
+.ham span{display:block;width:20px;height:2px;background:var(--tx2);border-radius:2px;transition:all .3s}
+
+/* ─── PAGES ─── */
+.page{display:none;position:relative;z-index:1;animation:pgIn .4s ease}
+.page.on{display:block}
+@keyframes pgIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* ─── HERO ─── */
+.hero{padding:4rem 1.5rem 3rem;text-align:center;position:relative}
+.hero::after{content:'';display:block;height:1px;background:linear-gradient(90deg,transparent,var(--br),transparent);margin:3rem 8% 0}
+.hero-badge{display:inline-flex;align-items:center;gap:.45rem;background:rgba(168,216,234,.09);border:1px solid var(--br2);border-radius:100px;padding:.3rem .95rem;font-size:.68rem;color:var(--a);letter-spacing:.12em;text-transform:uppercase;font-weight:700;margin-bottom:1.3rem}
+.hero h1{font-family:'Cinzel',serif;font-size:clamp(1.9rem,5.5vw,3.8rem);font-weight:700;line-height:1.1;margin-bottom:.85rem}
+.grad{background:linear-gradient(135deg,var(--a) 0%,var(--lav) 45%,var(--gold) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{color:var(--tx2);font-size:clamp(.84rem,2vw,.98rem);max-width:470px;margin:0 auto 2rem;line-height:1.72}
+.hero-stats{display:flex;justify-content:center;gap:2rem;flex-wrap:wrap}
+.hero-stat strong{display:block;font-family:'Cinzel',serif;font-size:1.5rem;background:linear-gradient(135deg,var(--a),var(--lav));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-stat span{font-size:.66rem;color:var(--tx3);text-transform:uppercase;letter-spacing:.1em;font-weight:700}
+
+/* ─── CARDS SHARED ─── */
+.mw{max-width:1160px;margin:0 auto}
+.strip{padding:1.2rem 1.4rem 0}
+
+/* ─── DISCORD WIDGET ─── */
+.dw-wrap{background:var(--bg2);border:1px solid var(--br);border-radius:14px;padding:1rem 1.2rem;display:flex;align-items:center;gap:1.1rem;position:relative;overflow:hidden}
+.dw-wrap::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(88,101,242,.07),transparent 60%);pointer-events:none}
+.dw-logo{font-size:2.2rem;flex-shrink:0}
+.dw-info{flex:1;min-width:0}
+.dw-name{font-family:'Cinzel',serif;font-size:.95rem;font-weight:700;margin-bottom:.18rem}
+.dw-stats{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:.5rem}
+.dw-stat{display:flex;align-items:center;gap:.35rem;font-size:.72rem;color:var(--tx2);font-weight:700}
+.dot-g{width:7px;height:7px;border-radius:50%;background:#57f287;flex-shrink:0}
+.dot-gr{width:7px;height:7px;border-radius:50%;background:var(--tx3);flex-shrink:0}
+.dw-msgs{display:flex;flex-direction:column;gap:.3rem;overflow:hidden;max-height:58px}
+.dw-msg{display:flex;align-items:center;gap:.5rem;font-size:.7rem;animation:msgUp .4s ease}
+@keyframes msgUp{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:none}}
+.dw-av{width:20px;height:20px;border-radius:50%;background:var(--bg3);border:1px solid var(--br);display:flex;align-items:center;justify-content:center;font-size:.7rem;flex-shrink:0}
+.dw-msg strong{color:var(--a);margin-right:.2rem;font-size:.69rem}
+.dw-msg span{color:var(--tx2)}
+.dw-actions{display:flex;flex-direction:column;gap:.42rem;flex-shrink:0}
+.dw-join{background:linear-gradient(135deg,#5865f2,#7289da);border:none;border-radius:9px;color:#fff;padding:.52rem 1rem;font-family:'Nunito',sans-serif;font-size:.77rem;font-weight:800;cursor:pointer;transition:all .22s;white-space:nowrap}
+.dw-join:hover{filter:brightness(1.12);transform:scale(1.04)}
+.dw-status{text-align:center;font-size:.62rem;color:var(--tx3);font-weight:700}
+
+/* ─── BANNER STRIP ─── */
+.bnr-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:.65rem}
+.bnr-card{background:var(--bg2);border:1px solid var(--br);border-radius:13px;padding:.9rem 1.05rem;display:flex;align-items:center;gap:.85rem;transition:border-color .2s}
+.bnr-card:hover{border-color:var(--br2)}
+.bnr-ico{font-size:1.95rem;flex-shrink:0}
+.bnr-info{flex:1;min-width:0}
+.bnr-lbl{font-size:.62rem;color:var(--tx2);text-transform:uppercase;letter-spacing:.1em;font-weight:700;margin-bottom:.14rem}
+.bnr-name{font-family:'Cinzel',serif;font-size:.84rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:.38rem}
+.bnr-timer{display:flex;gap:.28rem}
+.tu{background:var(--bg3);border:1px solid var(--br);border-radius:6px;padding:.26rem .42rem;text-align:center;min-width:33px}
+.tv{font-family:'Cinzel',serif;font-size:.9rem;font-weight:700;color:var(--a);line-height:1}
+.tl{font-size:.5rem;color:var(--tx3);text-transform:uppercase;margin-top:.08rem}
+.bnr-prog{margin-top:.5rem;height:2px;background:var(--bg4);border-radius:2px;overflow:hidden}
+.bnr-fill{height:100%;background:linear-gradient(90deg,var(--a),var(--lav));border-radius:2px}
+
+/* ─── RECENT ─── */
+.recent-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:.58rem}
+.recent-ttl{font-family:'Cinzel',serif;font-size:.73rem;text-transform:uppercase;letter-spacing:.14em;color:var(--tx2)}
+.recent-clr{background:none;border:none;font-size:.64rem;color:var(--tx3);cursor:pointer;font-family:'Nunito',sans-serif;font-weight:700;transition:color .2s}
+.recent-clr:hover{color:#ff8080}
+.recent-row{display:flex;gap:.5rem;overflow-x:auto;padding-bottom:.35rem;scrollbar-width:none}
+.recent-row::-webkit-scrollbar{display:none}
+.recent-item{background:var(--bg3);border:1px solid var(--br);border-radius:11px;padding:.5rem .75rem;display:flex;align-items:center;gap:.55rem;cursor:pointer;transition:all .22s;flex-shrink:0}
+.recent-item:hover{border-color:var(--br2);transform:translateY(-2px)}
+.rec-av{font-size:1.4rem}
+.rec-info strong{display:block;font-size:.75rem;font-weight:700;font-family:'Cinzel',serif}
+.rec-info span{font-size:.6rem;color:var(--tx2)}
+
+/* ─── FILTERS ─── */
+.fl-row{margin-bottom:.82rem}
+.fl-lbl{font-size:.62rem;text-transform:uppercase;letter-spacing:.16em;color:var(--tx3);margin-bottom:.46rem;font-weight:700}
+.fl-grp{display:flex;gap:.32rem;flex-wrap:wrap}
+.fb{background:var(--bg3);border:1px solid var(--br);border-radius:100px;color:var(--tx2);padding:.3rem .82rem;font-family:'Nunito',sans-serif;font-size:.74rem;font-weight:700;cursor:pointer;transition:all .18s;display:flex;align-items:center;gap:.28rem}
+.fb:hover{border-color:var(--a);color:var(--a)}
+.fb.on{background:rgba(168,216,234,.14);border-color:var(--a);color:var(--a)}
+.fb[data-e=Anemo].on{background:rgba(126,200,164,.13);border-color:var(--ce);color:var(--ce)}
+.fb[data-e=Hydro].on{background:rgba(76,194,241,.13);border-color:var(--ch);color:var(--ch)}
+.fb[data-e=Pyro].on{background:rgba(239,122,43,.13);border-color:var(--cp);color:var(--cp)}
+.fb[data-e=Cryo].on{background:rgba(158,217,247,.13);border-color:var(--cc);color:var(--cc)}
+.fb[data-e=Electro].on{background:rgba(199,125,255,.13);border-color:var(--cE);color:var(--cE)}
+.fb[data-e=Geo].on{background:rgba(240,178,50,.13);border-color:var(--cg);color:var(--cg)}
+.fb.fav-on{background:rgba(255,107,107,.12);border-color:#ff6b6b;color:#ff6b6b}
+
+/* ─── SECTION HDR ─── */
+.sec-hd{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.45rem;padding:1.25rem 1.4rem .65rem}
+.sec-ttl{font-family:'Cinzel',serif;font-size:.82rem;text-transform:uppercase;letter-spacing:.14em;color:var(--tx2)}
+.sec-r{display:flex;gap:.4rem;align-items:center}
+.cnt-badge{background:var(--bg3);border:1px solid var(--br);border-radius:100px;padding:.17rem .68rem;font-size:.68rem;color:var(--tx2);font-weight:700}
+.cmp-btn{display:flex;align-items:center;gap:.28rem;background:rgba(201,177,217,.1);border:1px solid rgba(201,177,217,.25);border-radius:100px;padding:.17rem .75rem;font-size:.68rem;font-weight:700;color:var(--lav);cursor:pointer;transition:all .2s}
+.cmp-btn:hover,.cmp-btn.on{background:rgba(201,177,217,.18);border-color:var(--lav)}
+.vt{display:flex;border:1px solid var(--br);border-radius:9px;overflow:hidden}
+.vt button{background:var(--bg3);border:none;padding:.28rem .58rem;cursor:pointer;font-size:.82rem;color:var(--tx2);transition:all .2s}
+.vt button.on{background:rgba(168,216,234,.15);color:var(--a)}
+
+/* ─── CHAR CARDS ─── */
+.cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(262px,1fr));gap:1rem;padding:0 1.4rem 4rem}
+.cc{background:var(--surface);border:1px solid var(--br);border-radius:16px;overflow:hidden;cursor:pointer;transition:all .3s cubic-bezier(.34,1.56,.64,1);animation:cin .5s ease both;position:relative}
+.cc:hover{transform:translateY(-7px);border-color:rgba(168,216,234,.4);box-shadow:0 24px 60px rgba(0,0,0,.42),0 0 30px var(--glow)}
+@keyframes cin{from{opacity:0;transform:translateY(22px) scale(.96)}to{opacity:1;transform:none}}
+.ct{position:relative;height:175px;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.cbg{position:absolute;inset:0;transition:transform .4s}
+.cc:hover .cbg{transform:scale(1.08)}
+.cov{position:absolute;inset:0;background:linear-gradient(to top,rgba(13,17,23,.9) 0%,transparent 55%)}
+html[data-t=light] .cov{background:linear-gradient(to top,rgba(238,242,247,.8) 0%,transparent 55%)}
+.cstars{position:absolute;top:.58rem;left:.68rem;font-size:.65rem;letter-spacing:1px}
+.celem{position:absolute;top:.56rem;right:2.45rem;width:27px;height:27px;border-radius:50%;background:rgba(0,0,0,.45);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:.82rem}
+.cfav{position:absolute;top:.56rem;right:.6rem;width:27px;height:27px;border-radius:50%;background:rgba(0,0,0,.45);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:.8rem;cursor:pointer;transition:all .22s;z-index:5}
+.cfav:hover{transform:scale(1.18)}
+.cfav.on{background:rgba(255,107,107,.22);border-color:rgba(255,107,107,.5)}
+.cav{font-size:4.4rem;position:relative;z-index:1;filter:drop-shadow(0 4px 18px rgba(0,0,0,.45));transition:transform .4s cubic-bezier(.34,1.56,.64,1)}
+.cc:hover .cav{transform:scale(1.1) translateY(-5px)}
+.ctier{position:absolute;bottom:.5rem;left:.6rem;padding:.14rem .56rem;border-radius:100px;font-size:.58rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
+.ts{background:rgba(255,228,160,.18);color:var(--gold);border:1px solid rgba(255,228,160,.35)}
+.ta{background:rgba(168,216,234,.18);color:var(--a);border:1px solid rgba(168,216,234,.35)}
+.tb{background:rgba(201,177,217,.18);color:var(--lav);border:1px solid rgba(201,177,217,.35)}
+.cdiff{position:absolute;top:2.25rem;right:.6rem;padding:.12rem .48rem;border-radius:100px;font-size:.57rem;font-weight:800}
+.de{background:rgba(181,234,215,.15);color:var(--mint);border:1px solid rgba(181,234,215,.3)}
+.dm{background:rgba(255,228,160,.12);color:var(--gold);border:1px solid rgba(255,228,160,.25)}
+.dh{background:rgba(201,177,217,.15);color:var(--lav);border:1px solid rgba(201,177,217,.3)}
+.ccmp{position:absolute;bottom:.5rem;right:.6rem;width:24px;height:24px;border-radius:6px;background:rgba(201,177,217,.15);border:1px solid rgba(201,177,217,.25);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;z-index:5;font-size:.66rem;color:var(--lav)}
+.ccmp:hover,.ccmp.on{background:rgba(201,177,217,.3);border-color:var(--lav)}
+.cbody{padding:.9rem .9rem .82rem}
+.cname{font-family:'Cinzel',serif;font-size:1.02rem;font-weight:700;margin-bottom:.14rem}
+.cmeta{font-size:.66rem;color:var(--tx2);font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.68rem;display:flex;align-items:center;gap:.32rem;flex-wrap:wrap}
+.dot{width:3px;height:3px;border-radius:50%;background:var(--tx3);flex-shrink:0}
+.ctags{display:flex;gap:.26rem;flex-wrap:wrap;margin-bottom:.72rem}
+.ctag{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:5px;padding:.13rem .46rem;font-size:.61rem;color:var(--tx2);font-weight:700}
+html[data-t=light] .ctag{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.1)}
+.cfoot{display:flex;align-items:center;justify-content:space-between}
+.cplay{font-size:.63rem;color:var(--tx3);font-weight:600}
+.ccta{background:rgba(168,216,234,.1);border:1px solid var(--br);border-radius:7px;color:var(--a);padding:.26rem .74rem;font-family:'Nunito',sans-serif;font-size:.66rem;font-weight:800;cursor:pointer;transition:all .18s;text-transform:uppercase;letter-spacing:.06em}
+.ccta:hover{background:rgba(168,216,234,.2);transform:scale(1.04)}
+.chelpful{display:flex;align-items:center;gap:.38rem;margin-top:.55rem;padding-top:.55rem;border-top:1px solid var(--br)}
+.hl{font-size:.61rem;color:var(--tx3);font-weight:700;flex:1}
+.hbtn{background:none;border:1px solid var(--br);border-radius:6px;padding:.18rem .52rem;font-size:.68rem;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:700;color:var(--tx2);transition:all .18s}
+.hbtn.u{}.hbtn.u:hover,.hbtn.u.on{border-color:var(--mint);color:var(--mint);background:rgba(181,234,215,.1)}
+.hbtn.d:hover,.hbtn.d.on{border-color:#ff8080;color:#ff8080;background:rgba(255,107,107,.08)}
+
+/* LIST VIEW */
+.cgrid.lv{grid-template-columns:1fr;gap:.45rem}
+.cgrid.lv .cc{display:flex;flex-direction:row;height:72px;border-radius:11px}
+.cgrid.lv .ct{width:72px;height:72px;flex-shrink:0;border-radius:11px 0 0 11px}
+.cgrid.lv .cav{font-size:3.3rem}
+.cgrid.lv .cov{opacity:.5}
+.cgrid.lv .cbody{display:flex;align-items:center;flex:1;padding:.48rem .85rem;gap:.65rem}
+.cgrid.lv .cname{font-size:.9rem;margin-bottom:0;white-space:nowrap}
+.cgrid.lv .cmeta{margin-bottom:0}
+.cgrid.lv .ctags,.cgrid.lv .chelpful,.cgrid.lv .cplay{display:none}
+.cgrid.lv .cfoot{margin-left:auto}
+.cgrid.lv .ccta{display:none}
+.cgrid.lv .ctier{font-size:.52rem;bottom:.38rem;left:.42rem}
+.cgrid.lv .cstars{font-size:.56rem;top:.36rem}
+.cgrid.lv .celem{width:20px;height:20px;top:.36rem;right:1.75rem;font-size:.65rem}
+.cgrid.lv .cfav{width:20px;height:20px;top:.36rem;right:.38rem;font-size:.6rem}
+.cgrid.lv .ccmp{display:none}
+.cgrid.lv .cdiff{display:none}
+.cgrid.lv .cc:hover{transform:translateX(4px) translateY(-1px)}
+
+/* ─── OVERLAYS ─── */
+.overlay{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.75);backdrop-filter:blur(12px);display:none;align-items:center;justify-content:center;padding:1rem}
+.overlay.open{display:flex;animation:ovIn .3s ease}
+@keyframes ovIn{from{opacity:0}to{opacity:1}}
+.modal{background:var(--bg2);border:1px solid var(--br);border-radius:22px;width:100%;max-width:720px;max-height:92vh;overflow:hidden;display:flex;flex-direction:column;animation:modIn .3s cubic-bezier(.34,1.56,.64,1)}
+@keyframes modIn{from{opacity:0;transform:translateY(24px) scale(.95)}to{opacity:1;transform:none}}
+.mhd{padding:.95rem 1.2rem;border-bottom:1px solid var(--br);display:flex;align-items:center;gap:.75rem;flex-shrink:0}
+.mav{width:72px;height:72px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:2.2rem;flex-shrink:0;border:1px solid var(--br);flex-shrink:0}
+.mhi{flex:1;min-width:0}
+.mhi h2{font-family:'Cinzel',serif;font-size:1.08rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mhi p{font-size:.68rem;color:var(--tx2);margin-top:.08rem}
+.mha{display:flex;gap:.32rem;flex-shrink:0}
+.mbtn{background:var(--bg3);border:1px solid var(--br);border-radius:8px;padding:.26rem .62rem;color:var(--tx2);cursor:pointer;display:flex;align-items:center;gap:.25rem;transition:all .18s;font-family:'Nunito',sans-serif;font-size:.69rem;font-weight:700}
+.mbtn:hover{color:var(--tx);border-color:var(--a)}
+.mclose{background:var(--bg3);border:1px solid var(--br);border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tx2);font-size:.88rem;transition:all .18s}
+.mclose:hover{color:var(--tx);border-color:var(--a)}
+.mtabs{display:flex;border-bottom:1px solid var(--br);flex-shrink:0;overflow-x:auto;scrollbar-width:none}
+.mtabs::-webkit-scrollbar{display:none}
+.mtab{background:none;border:none;border-bottom:2px solid transparent;color:var(--tx3);padding:.58rem .95rem;font-family:'Nunito',sans-serif;font-size:.72rem;font-weight:700;cursor:pointer;transition:all .18s;white-space:nowrap;text-transform:uppercase;letter-spacing:.07em}
+.mtab:hover{color:var(--tx2)}
+.mtab.on{color:var(--a);border-bottom-color:var(--a)}
+.mscroll{overflow-y:auto;flex:1;scrollbar-width:thin;scrollbar-color:var(--br) transparent}
+.mscroll::-webkit-scrollbar{width:4px}
+.mscroll::-webkit-scrollbar-thumb{background:var(--br);border-radius:3px}
+.mpanel{display:none;padding:1.2rem}
+.mpanel.on{display:block}
+
+/* helpful in modal */
+.m-helpful{background:var(--bg3);border:1px solid var(--br);border-radius:12px;padding:.82rem 1rem;display:flex;align-items:center;gap:.85rem;flex-wrap:wrap;margin-bottom:1rem}
+.mh-txt{flex:1}.mh-txt strong{display:block;font-size:.8rem;font-weight:700;margin-bottom:.15rem}
+.mh-txt span{font-size:.7rem;color:var(--tx2)}
+.mh-btns{display:flex;gap:.45rem}
+.mhb{background:var(--bg4);border:1px solid var(--br);border-radius:9px;padding:.42rem .95rem;font-family:'Nunito',sans-serif;font-size:.78rem;font-weight:800;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:.35rem}
+.mhb:hover{transform:scale(1.04)}
+.mhb.u:hover,.mhb.u.on{border-color:var(--mint);color:var(--mint);background:rgba(181,234,215,.1)}
+.mhb.d:hover,.mhb.d.on{border-color:#ff8080;color:#ff8080;background:rgba(255,107,107,.08)}
+
+/* ─── SHARED PANEL STYLES ─── */
+.slbl{font-family:'Cinzel',serif;font-size:.7rem;text-transform:uppercase;letter-spacing:.15em;color:var(--tx2);margin:1.1rem 0 .55rem;display:flex;align-items:center;gap:.5rem}
+.slbl::after{content:'';flex:1;height:1px;background:var(--br)}
+.igrid{display:grid;grid-template-columns:repeat(2,1fr);gap:.48rem}
+.ic{background:var(--bg3);border:1px solid var(--br);border-radius:8px;padding:.6rem .82rem}
+.ic .il{font-size:.58rem;text-transform:uppercase;letter-spacing:.12em;color:var(--tx3);margin-bottom:.14rem;font-weight:700}
+.ic .iv{font-size:.86rem;font-weight:700}
+/* talent rows */
+.trow{display:flex;align-items:center;gap:.7rem;background:var(--bg3);border:1px solid var(--br);border-radius:8px;padding:.58rem .82rem;margin-bottom:.35rem}
+.tpri{font-family:'Cinzel',serif;font-size:1.05rem;font-weight:700;width:22px;text-align:center;flex-shrink:0;background:linear-gradient(135deg,var(--a),var(--lav));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.ti strong{display:block;font-size:.8rem;font-weight:700}
+.ti span{font-size:.66rem;color:var(--tx2)}
+.tlvl{margin-left:auto;font-size:.65rem;color:var(--tx2);font-weight:700;background:rgba(168,216,234,.08);border:1px solid var(--br);border-radius:6px;padding:.13rem .48rem;flex-shrink:0}
+/* weapon/art rows */
+.wrow,.arow{background:var(--bg3);border:1px solid var(--br);border-radius:9px;padding:.58rem .82rem;display:flex;align-items:center;gap:.65rem;margin-bottom:.35rem;transition:border-color .18s}
+.wrow:hover,.arow:hover{border-color:rgba(168,216,234,.25)}
+.wico,.aico{width:34px;height:34px;border-radius:8px;background:rgba(168,216,234,.07);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.wi strong,.ai strong{display:block;font-size:.8rem;font-weight:700;margin-bottom:.04rem}
+.wi span,.ai span{font-size:.66rem;color:var(--tx2)}
+.wrk{margin-left:auto;font-size:.6rem;font-weight:800;padding:.13rem .52rem;border-radius:100px;flex-shrink:0;letter-spacing:.07em}
+.rBis{background:rgba(255,228,160,.14);color:var(--gold);border:1px solid rgba(255,228,160,.28)}
+.rA{background:rgba(168,216,234,.14);color:var(--a);border:1px solid rgba(168,216,234,.28)}
+.rB{background:rgba(201,177,217,.14);color:var(--lav);border:1px solid rgba(201,177,217,.28)}
+.rC{background:rgba(110,118,129,.18);color:var(--tx2);border:1px solid var(--br)}
+/* stat grid */
+.sgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:.48rem}
+.sbox{background:var(--bg3);border:1px solid var(--br);border-radius:8px;padding:.65rem .82rem}
+.sbox .sl{font-size:.58rem;text-transform:uppercase;letter-spacing:.12em;color:var(--tx3);margin-bottom:.18rem;font-weight:700}
+.sbox .sv{font-size:.92rem;font-weight:800;color:var(--a);font-family:'Cinzel',serif}
+.sbox .sp{font-size:.61rem;color:var(--tx2);margin-top:.1rem;font-weight:600}
+/* const grid */
+.congrid{display:grid;grid-template-columns:repeat(2,1fr);gap:.48rem}
+.coni{background:var(--bg3);border:1px solid var(--br);border-radius:9px;padding:.6rem .82rem}
+.coni.pri{border-color:rgba(255,228,160,.28);background:rgba(255,228,160,.04)}
+.conhd{display:flex;align-items:center;gap:.42rem;margin-bottom:.24rem}
+.cnum{font-family:'Cinzel',serif;font-size:.76rem;font-weight:700;width:21px;height:21px;border-radius:50%;background:rgba(168,216,234,.1);border:1px solid var(--br2);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--a)}
+.coni.pri .cnum{background:rgba(255,228,160,.15);border-color:rgba(255,228,160,.35);color:var(--gold)}
+.cnn{font-size:.76rem;font-weight:700}
+.cdsc{font-size:.66rem;color:var(--tx2);line-height:1.5}
+.cbdg{margin-left:auto;font-size:.56rem;font-weight:800;padding:.11rem .44rem;border-radius:100px;background:rgba(255,228,160,.12);color:var(--gold);border:1px solid rgba(255,228,160,.25);flex-shrink:0}
+/* team */
+.team{background:var(--bg3);border:1px solid var(--br);border-radius:11px;padding:.85rem;margin-bottom:.6rem}
+.team-ttl{font-family:'Cinzel',serif;font-size:.78rem;font-weight:700;margin-bottom:.6rem;color:var(--a)}
+.tslots{display:grid;grid-template-columns:repeat(4,1fr);gap:.4rem;margin-bottom:.5rem}
+.tsl{background:var(--bg4);border:1px solid var(--br);border-radius:8px;padding:.48rem .3rem;text-align:center}
+.tsl-av{font-size:1.5rem;margin-bottom:.14rem}
+.tsl-n{font-size:.65rem;font-weight:700;margin-bottom:.06rem}
+.tsl-r{font-size:.57rem;color:var(--tx3);font-weight:600}
+.team-desc{font-size:.72rem;color:var(--tx2);line-height:1.58}
+/* tips */
+.tlist{list-style:none}
+.tip{display:flex;gap:.65rem;padding:.65rem 0;border-bottom:1px solid var(--br);align-items:flex-start}
+.tip:last-child{border-bottom:none}
+.tipico{width:25px;height:25px;border-radius:7px;background:rgba(168,216,234,.08);border:1px solid var(--br);display:flex;align-items:center;justify-content:center;font-size:.82rem;flex-shrink:0;margin-top:.06rem}
+.tip strong{display:block;font-size:.74rem;margin-bottom:.14rem;font-weight:700}
+.tip p{font-size:.74rem;color:var(--tx2);line-height:1.56}
+
+/* ─── MATERIALS ─── */
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.55rem}
+.mat-card{background:var(--bg3);border:1px solid var(--br);border-radius:10px;padding:.7rem .88rem;display:flex;gap:.65rem;align-items:flex-start}
+.mat-ico{font-size:1.7rem;flex-shrink:0;margin-top:.08rem}
+.mat-info strong{display:block;font-size:.78rem;font-weight:700;margin-bottom:.12rem}
+.mat-info span{font-size:.66rem;color:var(--tx2);line-height:1.45}
+.mat-where{font-size:.62rem;color:var(--a);font-weight:700;margin-top:.28rem;display:flex;align-items:center;gap:.25rem}
+
+/* ─── COMMENTS ─── */
+.cmt-form{background:var(--bg3);border:1px solid var(--br);border-radius:13px;padding:.9rem;margin-bottom:.85rem}
+.cmt-form textarea{width:100%;background:var(--bg4);border:1px solid var(--br);border-radius:9px;padding:.65rem;color:var(--tx);font-family:'Nunito',sans-serif;font-size:.78rem;resize:vertical;min-height:70px;outline:none;transition:border-color .18s;line-height:1.52}
+.cmt-form textarea:focus{border-color:var(--a)}
+.cmt-form textarea::placeholder{color:var(--tx3)}
+.cmt-ff{display:flex;align-items:center;justify-content:space-between;margin-top:.52rem;flex-wrap:wrap;gap:.45rem}
+.cmt-ni{background:var(--bg4);border:1px solid var(--br);border-radius:8px;padding:.36rem .62rem;color:var(--tx);font-family:'Nunito',sans-serif;font-size:.76rem;outline:none;transition:border-color .18s;width:145px}
+.cmt-ni:focus{border-color:var(--a)}
+.cmt-ni::placeholder{color:var(--tx3)}
+.cmt-sub{background:linear-gradient(135deg,rgba(168,216,234,.2),rgba(201,177,217,.2));border:1px solid var(--br2);border-radius:8px;color:var(--a);padding:.36rem .9rem;font-family:'Nunito',sans-serif;font-size:.73rem;font-weight:800;cursor:pointer;transition:all .18s}
+.cmt-sub:hover{transform:scale(1.03)}
+.cmt-list{display:flex;flex-direction:column;gap:.55rem}
+.cmt-item{background:var(--bg3);border:1px solid var(--br);border-radius:11px;padding:.78rem .9rem}
+.cmt-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:.38rem}
+.cmt-auth{font-size:.73rem;font-weight:800;color:var(--a)}
+.cmt-dt{font-size:.6rem;color:var(--tx3)}
+.cmt-tx{font-size:.76rem;color:var(--tx2);line-height:1.58}
+.cmt-lbtn{background:none;border:1px solid var(--br);border-radius:100px;padding:.15rem .58rem;font-size:.64rem;color:var(--tx2);cursor:pointer;font-family:'Nunito',sans-serif;font-weight:700;transition:all .18s;display:inline-flex;align-items:center;gap:.25rem;margin-top:.42rem}
+.cmt-lbtn:hover,.cmt-lbtn.on{border-color:rgba(255,107,107,.4);color:#ff8080;background:rgba(255,107,107,.07)}
+.cmt-empty{text-align:center;padding:1.8rem;color:var(--tx3);font-size:.78rem}
+
+/* ─── TOOLS MODAL ─── */
+.tmodal{background:var(--bg2);border:1px solid var(--br);border-radius:22px;width:100%;max-width:640px;max-height:90vh;overflow:hidden;display:flex;flex-direction:column;animation:modIn .3s cubic-bezier(.34,1.56,.64,1)}
+.thd{padding:1rem 1.3rem;border-bottom:1px solid var(--br);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.thd h2{font-family:'Cinzel',serif;font-size:1.05rem;background:linear-gradient(135deg,var(--a),var(--lav));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.tscroll{overflow-y:auto;flex:1;padding:1.2rem;scrollbar-width:thin;scrollbar-color:var(--br) transparent}
+.tscroll::-webkit-scrollbar{width:4px}
+.tscroll::-webkit-scrollbar-thumb{background:var(--br);border-radius:3px}
+.tpanel{display:none}.tpanel.on{display:block}
+/* artifact calc */
+.sinputs{display:grid;grid-template-columns:repeat(2,1fr);gap:.55rem}
+.sig{background:var(--bg3);border:1px solid var(--br);border-radius:9px;padding:.62rem .8rem;transition:border-color .18s}
+.sig:focus-within{border-color:var(--a)}
+.sig label{display:block;font-size:.59rem;text-transform:uppercase;letter-spacing:.12em;color:var(--tx3);margin-bottom:.28rem;font-weight:700}
+.sig input{background:none;border:none;outline:none;color:var(--tx);font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:700;width:100%}
+.calcbtn{background:linear-gradient(135deg,rgba(168,216,234,.15),rgba(201,177,217,.15));border:1px solid var(--br2);border-radius:10px;color:var(--a);padding:.68rem;font-family:'Nunito',sans-serif;font-size:.82rem;font-weight:800;cursor:pointer;transition:all .22s;text-transform:uppercase;letter-spacing:.08em;width:100%;margin-top:.55rem}
+.calcbtn:hover{background:linear-gradient(135deg,rgba(168,216,234,.25),rgba(201,177,217,.25));transform:translateY(-1px)}
+.cres{background:var(--bg3);border:1px solid var(--br);border-radius:12px;padding:1rem;display:none;margin-top:.55rem}
+.cres.on{display:block}
+.rrow{display:flex;align-items:center;justify-content:space-between;padding:.42rem 0;border-bottom:1px solid var(--br)}
+.rrow:last-child{border-bottom:none}
+.rlbl{font-size:.74rem;color:var(--tx2);font-weight:600}
+.rval{font-family:'Cinzel',serif;font-size:.98rem;font-weight:700}
+.rval.g{color:var(--mint)}.rval.o{color:var(--gold)}.rval.r{color:#ff8080}
+.cvbar{height:8px;background:var(--bg4);border-radius:4px;overflow:hidden;margin-top:.6rem}
+.cvfill{height:100%;border-radius:4px;transition:width .8s cubic-bezier(.34,1.56,.64,1);background:linear-gradient(90deg,var(--cp),var(--gold))}
+.cvrtg{text-align:center;margin-top:.7rem;font-family:'Cinzel',serif;font-size:1.02rem;font-weight:700}
+.atips{list-style:none}
+.atip{display:flex;gap:.5rem;padding:.42rem 0;border-bottom:1px solid var(--br);font-size:.72rem;color:var(--tx2);line-height:1.52;align-items:flex-start}
+.atip:last-child{border-bottom:none}
+
+/* ─── COMPARE ─── */
+.cmodal{background:var(--bg2);border:1px solid var(--br);border-radius:22px;width:100%;max-width:760px;max-height:90vh;overflow:hidden;display:flex;flex-direction:column;animation:modIn .3s cubic-bezier(.34,1.56,.64,1)}
+.cmbody{overflow-y:auto;flex:1;padding:1.2rem;scrollbar-width:thin;scrollbar-color:var(--br) transparent}
+.cslots{display:grid;grid-template-columns:1fr 1fr;gap:.85rem;margin-bottom:1.25rem}
+.cslot{background:var(--bg3);border:2px dashed var(--br);border-radius:13px;padding:1.2rem;text-align:center;cursor:pointer;transition:all .2s;min-height:105px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.4rem}
+.cslot:hover{border-color:var(--lav)}
+.cslot.filled{border-style:solid;border-color:var(--br2);cursor:default}
+.cslot-clr{background:rgba(255,100,100,.1);border:1px solid rgba(255,100,100,.2);border-radius:6px;padding:.16rem .55rem;font-size:.63rem;color:#ff8080;cursor:pointer;margin-top:.28rem;font-family:'Nunito',sans-serif;font-weight:700}
+.csect{font-family:'Cinzel',serif;font-size:.72rem;text-transform:uppercase;letter-spacing:.14em;color:var(--tx2);padding:.65rem 0 .42rem;display:flex;align-items:center;gap:.5rem}
+.csect::after{content:'';flex:1;height:1px;background:var(--br)}
+.crow{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.38rem}
+.ccell{background:var(--bg3);border:1px solid var(--br);border-radius:8px;padding:.52rem .75rem}
+.ccell.bet{border-color:rgba(181,234,215,.35);background:rgba(181,234,215,.05)}
+.ccl{font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--tx3);margin-bottom:.16rem;font-weight:700}
+.ccv{font-size:.82rem;font-weight:700}
+.chdr{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.52rem}
+.chdr-cell{background:var(--bg3);border:1px solid var(--br);border-radius:11px;padding:.75rem;text-align:center;display:flex;flex-direction:column;align-items:center;gap:.22rem}
+.chdr-cell .chav{font-size:2.2rem}
+.chdr-cell .chn{font-family:'Cinzel',serif;font-size:.9rem;font-weight:700}
+.chdr-cell .chm{font-size:.65rem;color:var(--tx2)}
+/* picker */
+.picker{position:fixed;inset:0;z-index:600;background:rgba(0,0,0,.82);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:1rem}
+.picker.open{display:flex;animation:ovIn .25s ease}
+.picker-box{background:var(--bg2);border:1px solid var(--br);border-radius:18px;width:100%;max-width:460px;max-height:76vh;overflow-y:auto;padding:1.2rem;animation:modIn .28s cubic-bezier(.34,1.56,.64,1)}
+.picker-ttl{font-family:'Cinzel',serif;font-size:.9rem;font-weight:700;margin-bottom:.85rem;color:var(--lav)}
+.picker-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:.5rem}
+.pi{background:var(--bg3);border:1px solid var(--br);border-radius:9px;padding:.62rem;text-align:center;cursor:pointer;transition:all .18s}
+.pi:hover{border-color:var(--lav);transform:scale(1.04)}
+.pi .pav{font-size:1.85rem;margin-bottom:.25rem}
+.pi .pn{font-size:.7rem;font-weight:700}
+.pi .pe{font-size:.6rem;color:var(--tx2)}
+
+/* ─── PAGES CONTENT ─── */
+.page-hero{text-align:center;padding:3rem 1.5rem 2rem}
+.page-hero h2{font-family:'Cinzel',serif;font-size:clamp(1.5rem,4vw,2.4rem);font-weight:700;margin-bottom:.5rem}
+.page-hero p{font-size:.88rem;color:var(--tx2);max-width:460px;margin:0 auto}
+
+/* TIERLIST */
+.tl-actions{display:flex;gap:.55rem;justify-content:center;flex-wrap:wrap;margin-bottom:1.75rem}
+.tl-act{background:var(--bg3);border:1px solid var(--br);border-radius:10px;padding:.52rem 1.1rem;font-family:'Nunito',sans-serif;font-size:.8rem;font-weight:700;color:var(--tx2);cursor:pointer;transition:all .18s}
+.tl-act:hover{border-color:var(--a);color:var(--a)}
+.tl-act.pri{background:linear-gradient(135deg,rgba(168,216,234,.15),rgba(201,177,217,.15));border-color:var(--br2);color:var(--a)}
+.tier-row{display:flex;gap:.55rem;align-items:stretch;margin-bottom:.5rem}
+.tier-lbl{width:50px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-family:'Cinzel',serif;font-size:1.25rem;font-weight:700;flex-shrink:0}
+.tS .tier-lbl{background:rgba(255,180,50,.18);color:#ffb432;border:1px solid rgba(255,180,50,.3)}
+.tA .tier-lbl{background:rgba(168,216,234,.18);color:var(--a);border:1px solid var(--br2)}
+.tB .tier-lbl{background:rgba(181,234,215,.18);color:var(--mint);border:1px solid rgba(181,234,215,.3)}
+.tC .tier-lbl{background:rgba(201,177,217,.18);color:var(--lav);border:1px solid rgba(201,177,217,.3)}
+.tD .tier-lbl{background:rgba(110,118,129,.18);color:var(--tx2);border:1px solid var(--br)}
+.tier-chars{flex:1;background:var(--bg3);border:1px solid var(--br);border-radius:9px;padding:.5rem;display:flex;flex-wrap:wrap;gap:.42rem;min-height:58px;transition:background .18s}
+.tier-chars.dov{background:rgba(168,216,234,.08);border-color:var(--br2)}
+.tlc{width:50px;height:50px;border-radius:9px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:grab;transition:all .2s;border:1px solid var(--br);background:var(--bg2);user-select:none}
+.tlc:hover{transform:scale(1.1);border-color:var(--br2)}
+.tlc:active{cursor:grabbing}
+.tlc.drag{opacity:.35}
+.tlc .tav{font-size:1.55rem;line-height:1}
+.tlc .tn{font-size:.4rem;font-weight:700;color:var(--tx2);text-align:center;white-space:nowrap;max-width:46px;overflow:hidden;text-overflow:ellipsis}
+.tl-unp{background:var(--bg3);border:1px solid var(--br);border-radius:12px;padding:.7rem;margin-top:.9rem}
+.tl-unp-ttl{font-size:.65rem;text-transform:uppercase;letter-spacing:.14em;color:var(--tx3);font-weight:700;margin-bottom:.55rem}
+.tl-cs{background:var(--bg2);border:1px solid var(--br);border-radius:13px;padding:1rem 1.2rem;margin-top:1.4rem}
+.tl-cs-ttl{font-family:'Cinzel',serif;font-size:.78rem;text-transform:uppercase;letter-spacing:.14em;color:var(--tx2);margin-bottom:.82rem;display:flex;align-items:center;gap:.5rem}
+.tl-cs-ttl::after{content:'';flex:1;height:1px;background:var(--br)}
+.tl-cs-row{display:flex;align-items:center;gap:.7rem;padding:.38rem 0;border-bottom:1px solid var(--br)}
+.tl-cs-row:last-child{border-bottom:none}
+.tl-cs-c{display:flex;align-items:center;gap:.5rem;width:120px;flex-shrink:0}
+.tl-cs-av{font-size:1.25rem}
+.tl-cs-n{font-size:.76rem;font-weight:700;font-family:'Cinzel',serif}
+.tl-bar-w{flex:1;height:6px;background:var(--bg4);border-radius:3px;overflow:hidden}
+.tl-bar{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--a),var(--lav));transition:width .8s cubic-bezier(.34,1.56,.64,1)}
+.tl-pct{font-size:.7rem;font-weight:800;color:var(--a);width:38px;text-align:right}
+
+/* WEAPONS */
+.w-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(275px,1fr));gap:.8rem}
+.wcard{background:var(--bg2);border:1px solid var(--br);border-radius:13px;padding:.95rem 1.1rem;display:flex;gap:.8rem;align-items:flex-start;transition:all .22s}
+.wcard:hover{border-color:var(--br2);transform:translateY(-3px);box-shadow:var(--shadow)}
+.wico-w{width:50px;height:50px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.8rem;flex-shrink:0;border:1px solid var(--br)}
+.w5{background:linear-gradient(135deg,rgba(255,228,160,.15),rgba(255,180,50,.1))}
+.w4{background:linear-gradient(135deg,rgba(201,177,217,.15),rgba(150,100,200,.1))}
+.w3{background:linear-gradient(135deg,rgba(168,216,234,.1),rgba(100,150,200,.08))}
+.wn{font-family:'Cinzel',serif;font-size:.87rem;font-weight:700;margin-bottom:.18rem}
+.wstars{font-size:.63rem;letter-spacing:1px;margin-bottom:.28rem}
+.wtype{display:inline-flex;align-items:center;gap:.25rem;background:rgba(168,216,234,.09);border:1px solid var(--br);border-radius:100px;padding:.12rem .52rem;font-size:.6rem;font-weight:800;color:var(--a);letter-spacing:.06em;text-transform:uppercase;margin-bottom:.45rem}
+.wstats{display:flex;gap:.45rem;flex-wrap:wrap;margin-bottom:.45rem}
+.wsc{background:var(--bg3);border:1px solid var(--br);border-radius:6px;padding:.13rem .52rem;font-size:.66rem;font-weight:700;color:var(--tx2)}
+.wsc span{color:var(--tx);font-family:'Cinzel',serif}
+.wdesc{font-size:.7rem;color:var(--tx2);line-height:1.52}
+.wbest{font-size:.66rem;color:var(--a);font-weight:700;margin-top:.38rem}
+
+/* REGIONS */
+.rgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1rem}
+.rcard{border-radius:15px;overflow:hidden;border:1px solid var(--br);transition:all .28s;cursor:pointer}
+.rcard:hover{transform:translateY(-6px);box-shadow:0 20px 50px rgba(0,0,0,.38)}
+.rbnr{height:120px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.rbnr-inner{position:relative;z-index:1;text-align:center}
+.rico{font-size:2.8rem;display:block;margin-bottom:.3rem}
+.rname{font-family:'Cinzel',serif;font-size:1.2rem;font-weight:700;color:#fff;text-shadow:0 2px 10px rgba(0,0,0,.5)}
+.rbody{background:var(--bg2);padding:.95rem 1.1rem}
+.relem{display:flex;align-items:center;gap:.4rem;margin-bottom:.48rem;font-size:.76rem;font-weight:700;color:var(--tx2)}
+.rdesc{font-size:.76rem;color:var(--tx2);line-height:1.58;margin-bottom:.65rem}
+.rhighlights{display:flex;gap:.3rem;flex-wrap:wrap;margin-bottom:.55rem}
+.rhl{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:5px;padding:.16rem .55rem;font-size:.63rem;font-weight:700;color:var(--tx2)}
+html[data-t=light] .rhl{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.1)}
+.rchars{font-size:.68rem;color:var(--tx3);margin-top:.42rem}
+
+/* NEWS */
+.news-flt{display:flex;gap:.35rem;flex-wrap:wrap;margin-bottom:1.3rem}
+.news-grid{display:flex;flex-direction:column;gap:.68rem}
+.ncard{background:var(--bg2);border:1px solid var(--br);border-radius:13px;padding:1.05rem 1.25rem;transition:all .22s;cursor:pointer}
+.ncard:hover{border-color:var(--br2);transform:translateX(4px)}
+.ntop{display:flex;align-items:center;gap:.7rem;margin-bottom:.6rem}
+.nbadge{padding:.18rem .68rem;border-radius:100px;font-size:.61rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;flex-shrink:0}
+.np{background:rgba(168,216,234,.15);color:var(--a);border:1px solid var(--br2)}
+.ne{background:rgba(255,228,160,.12);color:var(--gold);border:1px solid rgba(255,228,160,.25)}
+.nc{background:rgba(201,177,217,.12);color:var(--lav);border:1px solid rgba(201,177,217,.25)}
+.nco{background:rgba(181,234,215,.12);color:var(--mint);border:1px solid rgba(181,234,215,.25)}
+.ndate{font-size:.68rem;color:var(--tx3);font-weight:700;margin-left:auto}
+.ntitle{font-family:'Cinzel',serif;font-size:.97rem;font-weight:700;margin-bottom:.42rem}
+.nexc{font-size:.76rem;color:var(--tx2);line-height:1.62;margin-bottom:.62rem}
+.ntags{display:flex;gap:.28rem;flex-wrap:wrap}
+.ntag{background:rgba(255,255,255,.04);border:1px solid var(--br);border-radius:5px;padding:.13rem .5rem;font-size:.61rem;color:var(--tx3);font-weight:700}
+html[data-t=light] .ntag{background:rgba(0,0,0,.04)}
+.nmore{font-size:.7rem;color:var(--a);font-weight:700;margin-top:.45rem;display:inline-flex;align-items:center;gap:.28rem}
+
+/* SETTINGS */
+.settings-page{max-width:680px;margin:0 auto;padding:2rem 1.4rem 5rem}
+.settings-sec{background:var(--bg2);border:1px solid var(--br);border-radius:14px;margin-bottom:1rem;overflow:hidden}
+.settings-sec-ttl{font-family:'Cinzel',serif;font-size:.78rem;text-transform:uppercase;letter-spacing:.14em;color:var(--tx2);padding:.82rem 1.1rem;border-bottom:1px solid var(--br);background:rgba(168,216,234,.04)}
+.setting-row{display:flex;align-items:center;justify-content:space-between;padding:.82rem 1.1rem;border-bottom:1px solid var(--br)}
+.setting-row:last-child{border-bottom:none}
+.setting-row:hover{background:rgba(168,216,234,.03)}
+.setting-info strong{display:block;font-size:.82rem;font-weight:700;margin-bottom:.12rem}
+.setting-info span{font-size:.72rem;color:var(--tx2)}
+.toggle-sw{position:relative;width:44px;height:24px;flex-shrink:0}
+.toggle-sw input{opacity:0;width:0;height:0}
+.toggle-sw .slider{position:absolute;inset:0;background:var(--bg4);border-radius:100px;cursor:pointer;transition:background .25s;border:1px solid var(--br)}
+.toggle-sw input:checked + .slider{background:rgba(168,216,234,.35);border-color:var(--a)}
+.toggle-sw .slider::after{content:'';position:absolute;width:18px;height:18px;left:2px;top:2px;background:var(--tx3);border-radius:50%;transition:transform .25s,background .25s}
+.toggle-sw input:checked + .slider::after{transform:translateX(20px);background:var(--a)}
+.setting-btn{background:var(--bg3);border:1px solid var(--br);border-radius:8px;padding:.38rem .85rem;font-family:'Nunito',sans-serif;font-size:.78rem;font-weight:700;color:var(--tx2);cursor:pointer;transition:all .18s}
+.setting-btn:hover{border-color:var(--a);color:var(--a)}
+.setting-btn.danger:hover{border-color:#ff8080;color:#ff8080}
+.setting-select{background:var(--bg3);border:1px solid var(--br);border-radius:8px;padding:.38rem .65rem;font-family:'Nunito',sans-serif;font-size:.78rem;font-weight:700;color:var(--tx);cursor:pointer;outline:none}
+
+/* ─── PWA BANNER ─── */
+.pwa{position:fixed;bottom:1.3rem;right:1.3rem;z-index:999;background:var(--bg2);border:1px solid var(--br2);border-radius:15px;padding:.9rem 1.05rem;display:none;align-items:center;gap:.75rem;box-shadow:var(--shadow);max-width:285px;animation:slideUp .4s ease}
+.pwa.show{display:flex}
+@keyframes slideUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.pwa-ico{font-size:1.85rem;flex-shrink:0}
+.pwa-txt strong{display:block;font-family:'Cinzel',serif;font-size:.82rem;margin-bottom:.16rem}
+.pwa-txt span{font-size:.68rem;color:var(--tx2)}
+.pwa-acts{display:flex;gap:.42rem;margin-top:.5rem}
+.pwa-inst{background:linear-gradient(135deg,rgba(168,216,234,.2),rgba(201,177,217,.2));border:1px solid var(--br2);border-radius:7px;color:var(--a);padding:.3rem .75rem;font-family:'Nunito',sans-serif;font-size:.7rem;font-weight:800;cursor:pointer}
+.pwa-dis{background:none;border:1px solid var(--br);border-radius:7px;color:var(--tx3);padding:.3rem .6rem;font-family:'Nunito',sans-serif;font-size:.7rem;font-weight:700;cursor:pointer}
+
+/* ─── TOAST ─── */
+.toast{position:fixed;bottom:1.3rem;left:50%;transform:translateX(-50%) translateY(70px);z-index:1000;background:var(--bg2);border:1px solid var(--br2);border-radius:100px;padding:.48rem 1.15rem;font-size:.76rem;font-weight:700;color:var(--tx);display:flex;align-items:center;gap:.42rem;transition:transform .4s cubic-bezier(.34,1.56,.64,1),opacity .4s;opacity:0;pointer-events:none;white-space:nowrap;max-width:88vw;box-shadow:var(--shadow)}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+
+/* EMPTY */
+.empty{grid-column:1/-1;text-align:center;padding:3.5rem 1rem;color:var(--tx2)}
+.empty span{font-size:2.8rem;display:block;margin-bottom:.6rem}
+footer{position:relative;z-index:1;border-top:1px solid var(--br);padding:1.6rem 1.4rem;text-align:center}
+footer .flogo{font-family:'Cinzel',serif;font-size:.88rem;font-weight:700;margin-bottom:.38rem;background:linear-gradient(135deg,var(--a),var(--lav));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+footer p{color:var(--tx3);font-size:.7rem;line-height:1.85}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--br);border-radius:3px}
+@media(max-width:768px){
+  .nav-links{display:none}
+  .nav-links.mob{display:flex;flex-direction:column;position:fixed;top:60px;left:0;right:0;background:var(--bg2);border-bottom:1px solid var(--br);padding:.82rem;gap:.08rem;z-index:199}
+  .ham{display:flex}
+  .nsearch{width:115px}
+  .tools-btn span{display:none}
+  .cgrid{grid-template-columns:1fr 1fr;gap:.62rem}
+  .ct{height:148px}
+  .cav{font-size:3.6rem}
+  .tslots{grid-template-columns:repeat(2,1fr)}
+  .igrid,.sgrid,.congrid,.cslots,.crow,.chdr{grid-template-columns:1fr}
+  .sinputs{grid-template-columns:1fr}
+  .bnr-grid{grid-template-columns:1fr}
+  .w-grid{grid-template-columns:1fr}
+  .rgrid{grid-template-columns:1fr}
+  .pwa{right:.6rem;left:.6rem;max-width:100%}
+  .npanel{right:-65px;width:270px}
+  .dw-actions{flex-direction:row;align-items:center}
+  .tier-row{flex-direction:column}
+  .tier-lbl{width:100%;height:36px;border-radius:8px}
+  .mat-grid{grid-template-columns:1fr}
+}
+@media(max-width:460px){.cgrid{grid-template-columns:1fr}.nsearch{display:none}.hero-stats{gap:1.3rem}}
+</style>
+<noscript><style>#loader{display:none!important}.page{display:block!important}</style>
+<div style="position:fixed;top:0;left:0;right:0;z-index:9999;background:#ef7a2b;color:#fff;text-align:center;padding:.75rem;font-family:sans-serif;font-size:.85rem;font-weight:700;box-shadow:0 2px 12px rgba(0,0,0,.3)">⚠️ Bu site JavaScript gerektiriyor — Tarayıcı ayarlarından JS etkinleştirin.</div></noscript>
+</head>
+<body>
+<!-- WELCOME SCREEN -->
+<div id="welcomeScreen">
+  <div class="ws-aurora" style="position:absolute;inset:0"></div>
+  <div id="wsStars" style="position:absolute;inset:0;pointer-events:none"></div>
+  <div class="ws-content">
+    <div class="ws-badge">🌬️ &nbsp; Türkçe Genshin Rehberi</div>
+    <div class="ws-logo">StormWind</div>
+    <p class="ws-sub">Teyvat'ın en kapsamlı Türkçe rehberine hoş geldin, Gezgin.<br>Karakter buildleri, bölge rehberleri ve topluluk içeriği seni bekliyor.</p>
+    <div class="ws-question">⚡ Elementini seç</div>
+    <div class="ws-elements">
+      <button class="ws-el el-anemo" onclick="pickEl(this,'anemo','#7ec8a4')"><span class="we">🌬️</span>Anemo</button>
+      <button class="ws-el el-pyro" onclick="pickEl(this,'pyro','#ef7a2b')"><span class="we">🔥</span>Pyro</button>
+      <button class="ws-el el-hydro" onclick="pickEl(this,'hydro','#4cc2f1')"><span class="we">💧</span>Hydro</button>
+      <button class="ws-el el-electro" onclick="pickEl(this,'electro','#c77dff')"><span class="we">⚡</span>Electro</button>
+      <button class="ws-el el-cryo" onclick="pickEl(this,'cryo','#9ed9f7')"><span class="we">❄️</span>Cryo</button>
+      <button class="ws-el el-geo" onclick="pickEl(this,'geo','#f0b232')"><span class="we">🪨</span>Geo</button>
+      <button class="ws-el el-dendro" onclick="pickEl(this,'dendro','#a5c23d')"><span class="we">🌿</span>Dendro</button>
+      <button class="ws-el el-moon" onclick="pickEl(this,'moon','#b8c9f5')"><span class="we">🌙</span>Kuuvahki</button>
+    </div>
+    <button class="ws-start" onclick="startJourney()">✦ Maceraya Başla ✦</button>
+  </div>
+</div>
+
+<div id="loader">
+  <div class="ld-emojis">🌬️ 🔥 ⚡ ❄️ 💧 🪨</div>
+  <div class="ld-logo">StormWind</div>
+  <div class="ld-bar-wrap"><div class="ld-bar" id="ldBar"></div></div>
+  <div class="ld-sub">Teyvat Yükleniyor…</div>
+</div>
+
+<div class="scene-bg">
+  <div class="orb orb1"></div><div class="orb orb2"></div><div class="orb orb3"></div>
+</div>
+<div class="ptcl-canvas" id="ptcls"></div>
+
+<nav>
+  <div class="nav-logo" onclick="go('home')">StormWind<small>Genshin Rehberi</small></div>
+  <ul class="nav-links" id="navLinks">
+    <li><button id="nb-home" class="on" onclick="go('home')">🏠 Ana Sayfa</button></li>
+    <li><button id="nb-tierlist" onclick="go('tierlist')">🏆 Tier List</button></li>
+    <li><button id="nb-weapons" onclick="go('weapons')">⚔️ Silahlar</button></li>
+    <li><button id="nb-regions" onclick="go('regions')">🗺️ Bölgeler</button></li>
+    <li><button id="nb-news" onclick="go('news')">📰 Haberler</button></li>
+    <li><button id="nb-settings" onclick="go('settings')">⚙️ Ayarlar</button></li>
+  </ul>
+  <div class="nav-r">
+    <div class="sw">
+      <div class="nsearch">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#6e7681" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        <input type="text" id="srch" placeholder="Ara…" oninput="onSrch()" onkeydown="onSrchKey(event)" autocomplete="off">
+      </div>
+      <div class="sh-drop" id="shDrop"></div>
+    </div>
+    <div class="nw">
+      <button class="nbell" onclick="toggleNotif()">🔔<div class="ndot" id="ndot"></div></button>
+      <div class="npanel" id="npanel"></div>
+    </div>
+    <button class="icon-btn" id="themeBtn" onclick="toggleTheme()" title="Tema">🌙</button>
+    <button class="tools-btn" onclick="openTools()">🛠️ <span>Araçlar</span></button>
+    <button class="ham" id="ham" onclick="toggleMenu()"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<!-- HOME -->
+<div class="page on" id="page-home">
+  <div class="hero">
+  <div class="hero-aurora"><div class="ha-1"></div><div class="ha-2"></div><div class="ha-3"></div></div>
+    <div class="hero-badge">🌬️ &nbsp; Teyvat'ın En Kapsamlı Türkçe Rehberi</div>
+    <h1>Güçlen,<br><span class="grad">Teyvat'ı</span> Fethet</h1>
+    <p class="hero-sub">Karakter rehberleri, silah kataloğu, bölge rehberleri, topluluk tier list ve daha fazlası.</p>
+    <div class="hero-stats">
+      <div class="hero-stat"><strong>6+</strong><span>Karakter</span></div>
+      <div class="hero-stat"><strong>24</strong><span>Silah</span></div>
+      <div class="hero-stat"><strong>7</strong><span>Bölge</span></div>
+      <div class="hero-stat"><strong>4.9★</strong><span>Puan</span></div>
+    </div>
+  </div>
+  <div class="mw strip"><div class="dw-wrap" id="dwWrap"></div></div>
+  <div class="mw strip"><div class="bnr-grid" id="bnrGrid"></div></div>
+  <div class="mw strip" id="recentSec" style="display:none">
+    <div class="recent-hd"><div class="recent-ttl">🕐 Son Bakılan</div><button class="recent-clr" onclick="clearRecent()">Temizle</button></div>
+    <div class="recent-row" id="recentRow"></div>
+  </div>
+  <div class="mw strip">
+    <div class="fl-row"><div class="fl-lbl">Rol</div><div class="fl-grp" id="roleF">
+      <button class="fb on" onclick="sf('role','all',this)">Tümü</button>
+      <button class="fb" onclick="sf('role','DPS',this)">⚔️ DPS</button>
+      <button class="fb" onclick="sf('role','Sub-DPS',this)">🌀 Sub-DPS</button>
+      <button class="fb" onclick="sf('role','Support',this)">🛡️ Support</button>
+      <button class="fb" onclick="sf('role','Healer',this)">💚 Healer</button>
+    </div></div>
+    <div class="fl-row"><div class="fl-lbl">Element</div><div class="fl-grp" id="elemF">
+      <button class="fb on" onclick="sf('elem','all',this)">Tümü</button>
+      <button class="fb" data-e="Anemo" onclick="sf('elem','Anemo',this)">🌬️ Anemo</button>
+      <button class="fb" data-e="Pyro" onclick="sf('elem','Pyro',this)">🔥 Pyro</button>
+      <button class="fb" data-e="Electro" onclick="sf('elem','Electro',this)">⚡ Electro</button>
+      <button class="fb" data-e="Hydro" onclick="sf('elem','Hydro',this)">💧 Hydro</button>
+      <button class="fb" data-e="Cryo" onclick="sf('elem','Cryo',this)">❄️ Cryo</button>
+      <button class="fb" data-e="Geo" onclick="sf('elem','Geo',this)">🪨 Geo</button>
+    </div></div>
+    <div class="fl-row"><div class="fl-lbl">Özel</div><div class="fl-grp" id="tierF">
+      <button class="fb on" onclick="sf('tier','all',this)">Tümü</button>
+      <button class="fb" onclick="sf('tier','S',this)">⭐ S Tier</button>
+      <button class="fb" onclick="sf('tier','A',this)">🔷 A Tier</button>
+      <button class="fb" id="favFB" onclick="toggleFavF(this)">❤️ Favoriler</button>
+    </div></div>
+  </div>
+  <div class="mw sec-hd">
+    <div class="sec-ttl">Karakter Rehberleri</div>
+    <div class="sec-r">
+      <button class="cmp-btn" id="cmpBtn" onclick="openCmp()">⊕ Karşılaştır <span id="cmpCnt"></span></button>
+      <div class="vt"><button class="on" id="vtC" onclick="setV('c')" title="Kart">⊞</button><button id="vtL" onclick="setV('l')" title="Liste">≡</button></div>
+      <div class="cnt-badge" id="cntBadge">6 karakter</div>
+    </div>
+  </div>
+  <div class="mw"><div class="cgrid" id="cgrid"></div></div>
+</div>
+
+<!-- TIERLIST -->
+<div class="page" id="page-tierlist">
+  <div class="mw" style="padding:2rem 1.4rem 5rem">
+    <div class="page-hero" style="padding-top:1rem">
+      <h2>🏆 Topluluk <span class="grad">Tier List</span></h2>
+      <p>Sürükle-bırak ile sırala. Kendi tier list'ini oluştur.</p>
+    </div>
+    <div class="tl-actions">
+      <button class="tl-act" onclick="resetTL()">🔄 Sıfırla</button>
+      <button class="tl-act" onclick="showToast('🔗 Link kopyalandı!')">🔗 Paylaş</button>
+      <button class="tl-act pri" onclick="showToast('💾 Kaydedildi!')">💾 Kaydet</button>
+    </div>
+    <div id="tlBoard"></div>
+    <div class="tl-unp">
+      <div class="tl-unp-ttl">Yerleştirilmemiş Karakterler</div>
+      <div style="display:flex;flex-wrap:wrap;gap:.42rem" id="tlUnp" ondragover="tlDragOver(event,'unp')" ondrop="tlDrop(event,'unp')"></div>
+    </div>
+    <div class="tl-cs">
+      <div class="tl-cs-ttl">📊 Topluluk — En Çok S Tier Seçilen</div>
+      <div id="tlCS"></div>
+    </div>
+  </div>
+</div>
+
+<!-- WEAPONS -->
+<div class="page" id="page-weapons">
+  <div class="mw" style="padding:1.5rem 1.4rem 5rem">
+    <div class="page-hero"><h2>⚔️ Silah <span class="grad">Kataloğu</span></h2><p>Tüm silahlar, statlar ve en iyi kullanım.</p></div>
+    <div class="fl-grp" id="wTypeF" style="margin-bottom:1.2rem"></div>
+    <div class="w-grid" id="wGrid"></div>
+  </div>
+</div>
+
+<!-- REGIONS -->
+<div class="page" id="page-regions">
+  <div class="mw" style="padding:1.5rem 1.4rem 5rem">
+    <div class="page-hero"><h2>🗺️ Bölge <span class="grad">Rehberleri</span></h2><p>Teyvat'ın her bölgesi hakkında detaylı bilgi.</p></div>
+    <div class="rgrid" id="rgrid"></div>
+  </div>
+</div>
+
+<!-- NEWS -->
+<div class="page" id="page-news">
+  <div class="mw" style="padding:1.5rem 1.4rem 5rem">
+    <div class="page-hero"><h2>📰 Haberler & <span class="grad">Patch Notes</span></h2><p>Güncel gelişmeler ve versiyon notları.</p></div>
+    <div class="news-flt" id="newsFlt"></div>
+    <div class="news-grid" id="newsGrid"></div>
+  </div>
+</div>
+
+<!-- SETTINGS -->
+<div class="page" id="page-settings">
+  <div class="settings-page">
+    <div class="page-hero" style="padding-top:1rem"><h2>⚙️ <span class="grad">Ayarlar</span></h2><p>Tercihlerini özelleştir.</p></div>
+    <div class="settings-sec">
+      <div class="settings-sec-ttl">🎨 Görünüm</div>
+      <div class="setting-row">
+        <div class="setting-info"><strong>Karanlık / Aydınlık Mod</strong><span>Arayüz temasını değiştir</span></div>
+        <button class="setting-btn" onclick="toggleTheme()" id="themeSettingBtn">☀️ Aydınlığa Geç</button>
+      </div>
+      <div class="setting-row">
+        <div class="setting-info"><strong>Partiküller</strong><span>Arka plan partikülleri</span></div>
+        <label class="toggle-sw"><input type="checkbox" id="ptcToggle" checked onchange="togglePtcl(this.checked)"><span class="slider"></span></label>
+      </div>
+      <div class="setting-row">
+        <div class="setting-info"><strong>Animasyonlar</strong><span>Kart giriş animasyonları</span></div>
+        <label class="toggle-sw"><input type="checkbox" id="animToggle" checked onchange="toggleAnim(this.checked)"><span class="slider"></span></label>
+      </div>
+      <div class="setting-row">
+        <div class="setting-info"><strong>Varsayılan Görünüm</strong><span>Kart veya liste görünümü</span></div>
+        <select class="setting-select" onchange="setV(this.value)"><option value="c">Kart</option><option value="l">Liste</option></select>
+      </div>
+    </div>
+    <div class="settings-sec">
+      <div class="settings-sec-ttl">🔔 Bildirimler</div>
+      <div class="setting-row">
+        <div class="setting-info"><strong>Patch Notları</strong><span>Yeni güncelleme bildirimleri</span></div>
+        <label class="toggle-sw"><input type="checkbox" checked><span class="slider"></span></label>
+      </div>
+      <div class="setting-row">
+        <div class="setting-info"><strong>Banner Uyarıları</strong><span>Banner bitiş uyarıları</span></div>
+        <label class="toggle-sw"><input type="checkbox" checked><span class="slider"></span></label>
+      </div>
+      <div class="setting-row">
+        <div class="setting-info"><strong>Etkinlik Hatırlatıcıları</strong><span>Etkinlik başlangıç bildirimleri</span></div>
+        <label class="toggle-sw"><input type="checkbox"><span class="slider"></span></label>
+      </div>
+    </div>
+    <div class="settings-sec">
+      <div class="settings-sec-ttl">💾 Veri</div>
+      <div class="setting-row">
+        <div class="setting-info"><strong>Favorileri Temizle</strong><span>Tüm favori karakterleri kaldır</span></div>
+        <button class="setting-btn danger" onclick="if(confirm('Favoriler silinsin mi?')){localStorage.removeItem('sw_favs');favs=new Set();render();showToast('❤️ Favoriler temizlendi')}">Temizle</button>
+      </div>
+      <div class="setting-row">
+        <div class="setting-info"><strong>Arama Geçmişi</strong><span>Kayıtlı aramaları sil</span></div>
+        <button class="setting-btn danger" onclick="lsSet('sw_sh',[]);showToast('🔍 Geçmiş temizlendi')">Temizle</button>
+      </div>
+      <div class="setting-row">
+        <div class="setting-info"><strong>Tier List Sıfırla</strong><span>Kendi tier list'ini sıfırla</span></div>
+        <button class="setting-btn danger" onclick="lsSet('sw_tl',null);showToast('🏆 Tier list sıfırlandı')">Sıfırla</button>
+      </div>
+      <div class="setting-row">
+        <div class="setting-info"><strong>Uygulama Sürümü</strong><span>StormWind v3.0 — Mart 2026</span></div>
+        <span style="font-size:.72rem;color:var(--tx3);font-weight:700">v3.0</span>
+      </div>
+    </div>
+    <div class="settings-sec">
+      <div class="settings-sec-ttl">📋 Patch Notes — v5.5</div>
+      <div style="padding:1rem 1.1rem">
+        <div style="display:flex;flex-direction:column;gap:.65rem">
+          <div><strong style="font-size:.82rem;color:var(--a)">🌟 Yeni Özellikler</strong><ul style="margin-top:.4rem;padding-left:1.2rem;font-size:.76rem;color:var(--tx2);line-height:1.7"><li>Karakter kasılma materyalleri sayfası</li><li>Aydınlık/Karanlık mod toggle</li><li>Ayarlar sayfası</li><li>Gelişmiş partiküller</li><li>Liste/Kart görünümü toggle</li></ul></div>
+          <div><strong style="font-size:.82rem;color:var(--mint)">🔧 Düzeltmeler</strong><ul style="margin-top:.4rem;padding-left:1.2rem;font-size:.76rem;color:var(--tx2);line-height:1.7"><li>SecurityError history.replaceState düzeltildi</li><li>Karakter modalı tıklama hatası giderildi</li><li>Partiküller düzenlendi</li><li>Tema geçişi düzeltildi</li></ul></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CHAR MODAL -->
+<div class="overlay" id="charOv">
+  <div class="modal" id="charModal">
+    <div class="mhd">
+      <div class="mav" id="mav"></div>
+      <div class="mhi"><h2 id="mname"></h2><p id="mmeta"></p></div>
+      <div class="mha">
+        <button class="mbtn" onclick="shareChar()">🔗 Link</button>
+        <button class="mclose" onclick="closeChar()">✕</button>
+      </div>
+    </div>
+    <div class="mtabs" id="mtabs"></div>
+    <div class="mscroll" id="mpanels"></div>
+  </div>
+</div>
+
+<!-- TOOLS -->
+<div class="overlay" id="toolsOv">
+  <div class="tmodal">
+    <div class="thd"><h2>🛠️ Araçlar</h2><button class="mclose" onclick="closeTools()">✕</button></div>
+    <div class="mtabs" id="toolsTabs"></div>
+    <div class="tscroll" id="toolsContent"></div>
+  </div>
+</div>
+
+<!-- COMPARE -->
+<div class="overlay" id="cmpOv">
+  <div class="cmodal">
+    <div class="mhd" style="border-bottom:1px solid var(--br)">
+      <div style="flex:1;font-family:'Cinzel',serif;font-size:1.02rem;font-weight:700;background:linear-gradient(135deg,var(--lav),var(--a));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">⊕ Karşılaştırma</div>
+      <button class="mclose" onclick="closeCmp()">✕</button>
+    </div>
+    <div class="cmbody" id="cmpBody"></div>
+  </div>
+</div>
+<div class="picker" id="pickerOv">
+  <div class="picker-box">
+    <div class="picker-ttl">Karakter Seç</div>
+    <div class="picker-grid" id="pickerGrid"></div>
+  </div>
+</div>
+
+<div class="pwa" id="pwa"><div class="pwa-ico">🌬️</div><div class="pwa-txt"><strong>Uygulamayı Yükle</strong><span>Ana ekranına ekle</span><div class="pwa-acts"><button class="pwa-inst" onclick="installPWA()">📲 Yükle</button><button class="pwa-dis" onclick="dismissPWA()">Kapat</button></div></div></div>
+<div class="toast" id="toast"></div>
+<footer><div class="flogo">StormWind 🍃</div><p>Genshin Impact, HoYoverse'e aittir. Fan sitesi · Ticari amaç taşımaz.</p></footer>
+<script>
+/* ══════════════════════════════════════
+   DATA
+══════════════════════════════════════ */
+const CHARS = [
+{id:1,slug:"venti",name:"Venti",el:"Anemo",role:"Support",wpn:"Yay",stars:5,tier:"S",diff:"Kolay",region:"Mondstadt",av:"🎵",bg:"linear-gradient(135deg,#062014,#0a2818)",
+ tags:["Crowd Control","Energy Regen","Grouping"],play:"Burst Rotasyon",
+ desc:"Mondstadt'ın bardu'su. Anemo Archonu Barbatos'un insani biçimi. Düşmanları gruplayan güçlü Q ile meta destek.",
+ info:[{l:"Bölge",v:"Mondstadt"},{l:"Yıldız",v:"5★"},{l:"Silah",v:"Yay"},{l:"Tier",v:"S Tier"},{l:"Rol",v:"Support"},{l:"Zorluk",v:"Kolay"}],
+ talents:[{p:1,n:"Elemental Burst (Q)",d:"Düşmanları siyah deliğe çeker, Anemo+Swirl hasarı",lvl:"9-10"},{p:2,n:"Elemental Skill (E)",d:"Anemo fırtınası, Swirl tetikler",lvl:"7-8"},{p:3,n:"Normal Attack",d:"Düşük öncelik",lvl:"1"}],
+ materials:{boss:{ico:"💧",n:"Hurricane Seed",where:"Stormterror Lair (Mondstadt)"}, gem:{ico:"💎",n:"Vayuda Turquoise",where:"Winddragon & Anemo Hypostasis"},mat:{ico:"🌿",n:"Cecilia",where:"Starsnatch Cliff, Mondstadt"},mob:{ico:"🦋",n:"Slime Condensate → Crown",where:"Tüm bölgelerde Slime'lar"}},
+ weapons:[{ico:"🏹",n:"Elegy for the End",d:"5★ BiS — EM+ER, takım buff",rk:"BiS"},{ico:"🏹",n:"Favonius Warbow",d:"4★ ER battery",rk:"A"},{ico:"🏹",n:"Stringless",d:"4★ EM bazlı",rk:"A"},{ico:"🏹",n:"Sacrificial Bow",d:"4★ Çift E",rk:"B"}],
+ artifacts:[{n:"Viridescent Venerer (4pc)",d:"Swirl +%60, RES -%40 — DEĞİŞTİRİLEMEZ"},{n:"Instructor (4pc)",d:"+120 EM, erken oyun F2P"}],
+ stats:[{l:"EM",v:"600-800",p:"Birincil"},{l:"Energy Recharge",v:"160%+",p:"Birincil"},{l:"ATK",v:"Düşük",p:"-"},{l:"CRIT",v:"İsteğe bağlı",p:"-"}],
+ constellations:[{n:"Splitting Gales",d:"Charged attack +%33",pri:false},{n:"Breeze of Reminiscence",d:"Hedefler -%12 RES",pri:true,badge:"Önemli"},{n:"Ode to Thousand Winds",d:"Q +3",pri:false},{n:"Hurricane of Freedom",d:"+%25 hız buff",pri:false},{n:"Concerto dal Cielo",d:"E +3",pri:false},{n:"Storm of Defiance",d:"CRIT RES -%12",pri:true,badge:"Güçlü"}],
+ teams:[{name:"Vaporize CC",slots:[{av:"🎵",n:"Venti",r:"CC"},{av:"🦋",n:"Hu Tao",r:"DPS"},{av:"🌊",n:"Xingqiu",r:"Sub"},{av:"💊",n:"Bennett",r:"Heal"}],desc:"Venti Q toplar, Hu Tao Vaporize yakar."},{name:"Freeze",slots:[{av:"🎵",n:"Venti",r:"CC"},{av:"❄️",n:"Ayaka",r:"DPS"},{av:"💧",n:"Kokomi",r:"Heal"},{av:"❄️",n:"Diona",r:"Shield"}],desc:"Freeze + AOE CC."}],
+ tips:[{ico:"🌬️",t:"E→Q Kombo",d:"E ile enerji kazan, sonra Q at."},{ico:"📊",t:"160%+ ER",d:"Her rotasyonda Q için şart."},{ico:"⚗️",t:"VV Zorunlu",d:"Element RES -%40 sağlar."},{ico:"💡",t:"Swirl Sırası",d:"Önce element uygula, sonra Anemo."}]},
+
+{id:2,slug:"hu-tao",name:"Hu Tao",el:"Pyro",role:"DPS",wpn:"Mızrak",stars:5,tier:"S",diff:"Orta",region:"Liyue",av:"🦋",bg:"linear-gradient(135deg,#2a0d08,#180604)",
+ tags:["HP Scaling","Vaporize","Burst DPS"],play:"HP Yönetimi",
+ desc:"Wangsheng Cenaze Şirketinin 77. direktörü. HP bazlı Pyro hasarıyla Teyvat'ın en güçlü DPS'lerinden biri.",
+ info:[{l:"Bölge",v:"Liyue"},{l:"Yıldız",v:"5★"},{l:"Silah",v:"Mızrak"},{l:"Tier",v:"S Tier"},{l:"Rol",v:"Main DPS"},{l:"Zorluk",v:"Orta"}],
+ talents:[{p:1,n:"Elemental Skill (E)",d:"Paramita Papilio modu — Ana hasar kaynağı",lvl:"9-10"},{p:2,n:"Normal Attack",d:"E modunda Charged saldırı",lvl:"8-9"},{p:3,n:"Elemental Burst (Q)",d:"AOE Pyro + Heal",lvl:"8"}],
+ materials:{boss:{ico:"🦋",n:"Juvenile Jade",where:"Primo Geovishap (Liyue)"}, gem:{ico:"💎",n:"Agnidus Agate",where:"Pyro Regisvine & Pyro Hypostasis"},mat:{ico:"🌸",n:"Silk Flower",where:"Liyue Harbor & Wangshu Inn"},mob:{ico:"👻",n:"Whopperflower Nectar → Concentrate",where:"Tüm bölgelerde Whopperflower"}},
+ weapons:[{ico:"🔱",n:"Staff of Homa",d:"5★ BiS — HP+ATK dönüşümü",rk:"BiS"},{ico:"🔱",n:"Staff of Scarlet Sands",d:"5★ EM→ATK",rk:"A"},{ico:"🔱",n:"Deathmatch",d:"4★ CRIT Rate",rk:"A"},{ico:"🔱",n:"Dragon's Bane",d:"4★ F2P EM",rk:"B"}],
+ artifacts:[{n:"Crimson Witch of Flames (4pc)",d:"Pyro +%15, Vaporize +%15"},{n:"Shimenawa (2) + Crimson (2)",d:"ATK +%18 + Pyro +%15"}],
+ stats:[{l:"HP",v:"30.000+",p:"Birincil"},{l:"CRIT Rate",v:"%60+",p:"Birincil"},{l:"CRIT DMG",v:"%120+",p:"Birincil"},{l:"EM",v:"100-200",p:"İkincil"}],
+ constellations:[{n:"Crimson Bouquet",d:"Plunge hasar stamina tüketmez",pri:false},{n:"Ominous Rainfall",d:"CA +1 stack",pri:false},{n:"Lingering Carmine",d:"E +3",pri:false},{n:"Garden of Eternal Rest",d:"+%12 Pyro CRIT",pri:true,badge:"Güçlü"},{n:"Floral Incense",d:"Q +3",pri:false},{n:"Butterfly's Embrace",d:"<%25 HP — büyük buff",pri:true,badge:"BiS C6"}],
+ teams:[{name:"Hu Tao Vaporize",slots:[{av:"🦋",n:"Hu Tao",r:"DPS"},{av:"🌊",n:"Xingqiu",r:"Sub"},{av:"🌬️",n:"Yelan",r:"Sub"},{av:"🪨",n:"Zhongli",r:"Shield"}],desc:"Meta Vaporize."},{name:"National Hu Tao",slots:[{av:"🦋",n:"Hu Tao",r:"DPS"},{av:"🌊",n:"Xingqiu",r:"Sub"},{av:"💊",n:"Bennett",r:"Heal"},{av:"🎵",n:"Venti",r:"CC"}],desc:"Bennett buff + Venti CC."}],
+ tips:[{ico:"❤️",t:"HP %50 Altında",d:"E bonus için HP düşük tut, iyileşme."},{ico:"🔱",t:"Charged Attack",d:"E modunda ana hasar kaynağı."},{ico:"⚗️",t:"Vaporize",d:"Xingqiu Q → Hu Tao CA = Vaporize."},{ico:"⚡",t:"Rotasyon",d:"Xingqiu Q → Zhongli E → Hu Tao E → CA spam → Q"}]},
+
+{id:3,slug:"raiden-shogun",name:"Raiden Shogun",el:"Electro",role:"Sub-DPS",wpn:"Mızrak",stars:5,tier:"S",diff:"Orta",region:"Inazuma",av:"⚡",bg:"linear-gradient(135deg,#14063a,#0a0220)",
+ tags:["Energy Battery","Burst DPS","Hyperbloom"],play:"Burst Odaklı",
+ desc:"Inazuma'nın Electro Archonu. Takıma enerji sağlarken güçlü burst hasarı verir.",
+ info:[{l:"Bölge",v:"Inazuma"},{l:"Yıldız",v:"5★"},{l:"Silah",v:"Mızrak"},{l:"Tier",v:"S Tier"},{l:"Rol",v:"Sub-DPS"},{l:"Zorluk",v:"Orta"}],
+ talents:[{p:1,n:"Elemental Burst (Q)",d:"Ana hasar kaynağı — Musou Isshin",lvl:"9-10"},{p:2,n:"Elemental Skill (E)",d:"Enerji + Resolve biriktirme",lvl:"6-8"},{p:3,n:"Normal Attack",d:"Q modunda kullanılır",lvl:"6"}],
+ materials:{boss:{ico:"⚡",n:"Storm Beads",where:"Thunder Manifestation (Inazuma Seirai)"}, gem:{ico:"💎",n:"Vajrada Amethyst",where:"Electro Hypostasis & Primo Geovishap"},mat:{ico:"🌸",n:"Naku Weed",where:"Inazuma — Yashiori & Narukami"},mob:{ico:"🐺",n:"Old Handguard → Kageuchi",where:"Nobushi & Kairagi (Inazuma)"}},
+ weapons:[{ico:"🔱",n:"Engulfing Lightning",d:"5★ BiS — ER→ATK dönüşümü",rk:"BiS"},{ico:"🔱",n:"Staff of Scarlet Sands",d:"5★ Hyperbloom",rk:"A"},{ico:"🔱",n:"The Catch",d:"4★ F2P En İyi",rk:"A"},{ico:"🔱",n:"Favonius Lance",d:"4★ Battery",rk:"B"}],
+ artifacts:[{n:"Emblem of Severed Fate (4pc)",d:"ER→Burst DMG — DEĞİŞTİRİLEMEZ"},{n:"Thundering Fury (2) + Emblem (2)",d:"Electro +%15 + ER"}],
+ stats:[{l:"Energy Recharge",v:"%200+",p:"Birincil"},{l:"CRIT Rate",v:"%50+",p:"Birincil"},{l:"CRIT DMG",v:"%100+",p:"Birincil"},{l:"ATK",v:"2000+",p:"İkincil"}],
+ constellations:[{n:"Ominous Inscription",d:"Resolve +%80 hızlı birikir",pri:false},{n:"Steelbreaker",d:"DEF -%60",pri:true,badge:"Güçlü"},{n:"Shinkage Bygones",d:"Q +3",pri:false},{n:"Pledge of Propriety",d:"Takım +%30 ATK",pri:true,badge:"Önemli"},{n:"Shogun's Descent",d:"E +3",pri:false},{n:"Wishbearer",d:"Q CD azaltır",pri:false}],
+ teams:[{name:"Raiden National",slots:[{av:"⚡",n:"Raiden",r:"Sub"},{av:"💊",n:"Bennett",r:"Heal"},{av:"🔥",n:"Xiangling",r:"Sub"},{av:"🍁",n:"Kazuha",r:"Buff"}],desc:"En güçlü 4★ kompozisyonu."},{name:"Hyperbloom",slots:[{av:"⚡",n:"Raiden",r:"Trigger"},{av:"🌿",n:"Nahida",r:"Dendro"},{av:"💧",n:"Kokomi",r:"Heal"},{av:"🌿",n:"Collei",r:"Dendro"}],desc:"Hyperbloom meta."}],
+ tips:[{ico:"⚡",t:"E Hep Aktif",d:"E ile Resolve biriktirmeye devam eder."},{ico:"📊",t:"%200 ER",d:"Engulfing Lightning ile daha az gerekir."},{ico:"🔄",t:"Rotasyon",d:"Takım Q'ları → Raiden Q."},{ico:"💡",t:"C2 DEF",d:"DEF -%60 çok büyük boost."}]},
+
+{id:4,slug:"kazuha",name:"Kazuha",el:"Anemo",role:"Support",wpn:"Kılıç",stars:5,tier:"S",diff:"Kolay",region:"Inazuma",av:"🍁",bg:"linear-gradient(135deg,#251508,#160c04)",
+ tags:["EM Buffer","Swirl","Element DMG Buff"],play:"Buff & Swirl",
+ desc:"EM bazlı element buff'larıyla tüm takımı güçlendiren Ronin. Her takıma uyar.",
+ info:[{l:"Bölge",v:"Inazuma"},{l:"Yıldız",v:"5★"},{l:"Silah",v:"Kılıç"},{l:"Tier",v:"S Tier"},{l:"Rol",v:"Support"},{l:"Zorluk",v:"Kolay"}],
+ talents:[{p:1,n:"Elemental Skill (E)",d:"Plunge combo tetikler",lvl:"6-9"},{p:2,n:"Elemental Burst (Q)",d:"AOE Swirl, element buff",lvl:"6-9"},{p:3,n:"Normal Attack",d:"Çok düşük öncelik",lvl:"1"}],
+ materials:{boss:{ico:"🍁",n:"Marionette Core",where:"Maguu Kenki (Inazuma)"}, gem:{ico:"💎",n:"Vayuda Turquoise",where:"Winddragon & Anemo Hypostasis"},mat:{ico:"🌺",n:"Sea Ganoderma",where:"Inazuma sahil bölgeleri"},mob:{ico:"🌊",n:"Treasure Hoarder Insignia",where:"Treasure Hoarders (tüm bölgeler)"}},
+ weapons:[{ico:"🗡️",n:"Freedom-Sworn",d:"5★ BiS — EM+Takım buff",rk:"BiS"},{ico:"🗡️",n:"Mistsplitter's Reforged",d:"5★ CRIT+Elem",rk:"A"},{ico:"🗡️",n:"Iron Sting",d:"4★ F2P EM",rk:"A"},{ico:"🗡️",n:"Favonius Sword",d:"4★ Battery",rk:"B"}],
+ artifacts:[{n:"Viridescent Venerer (4pc)",d:"DEĞİŞTİRİLEMEZ — Swirl+%60, RES-%40"},{n:"Instructor (4pc)",d:"+120 EM erken oyun"}],
+ stats:[{l:"Elemental Mastery",v:"800-1000",p:"Birincil"},{l:"Energy Recharge",v:"%130+",p:"İkincil"},{l:"HP/DEF",v:"Hayatta kalma",p:"Üçüncül"},{l:"CRIT",v:"Gereksiz",p:"-"}],
+ constellations:[{n:"Scarlet Hills",d:"E CD -%10",pri:false},{n:"Yamaarashi Tailwind",d:"+200 EM takım buff",pri:true,badge:"Önemli"},{n:"Maple Monogatari",d:"E +3",pri:false},{n:"Oozora Genpou",d:"Stamina regen",pri:false},{n:"Wisdom of Bansei",d:"Q +3",pri:false},{n:"Crimson Momiji",d:"Swirl +%200",pri:true,badge:"Güçlü"}],
+ teams:[{name:"Vaporize",slots:[{av:"🍁",n:"Kazuha",r:"Buff"},{av:"🦋",n:"Hu Tao",r:"DPS"},{av:"🌊",n:"Xingqiu",r:"Sub"},{av:"💊",n:"Bennett",r:"Heal"}],desc:"Pyro RES düşür, EM buff."},{name:"Freeze",slots:[{av:"🍁",n:"Kazuha",r:"Buff"},{av:"❄️",n:"Ayaka",r:"DPS"},{av:"💧",n:"Kokomi",r:"Heal"},{av:"❄️",n:"Shenhe",r:"Cryo"}],desc:"Cryo RES düşür."}],
+ tips:[{ico:"📊",t:"EM=Element Buff",d:"200 EM ≈ %4 element DMG bonus."},{ico:"🌬️",t:"Plunge Kombo",d:"E → Yükseliş → Plunge attack."},{ico:"🎯",t:"VV -40%",d:"RES düşürür, her takımda değerli."},{ico:"⚗️",t:"Swirl Sırası",d:"E/Q öncesi element uygulanmış olmalı."}]},
+
+{id:5,slug:"zhongli",name:"Zhongli",el:"Geo",role:"Support",wpn:"Mızrak",stars:5,tier:"S",diff:"Kolay",region:"Liyue",av:"🪨",bg:"linear-gradient(135deg,#221508,#130d05)",
+ tags:["En Güçlü Kalkan","Petrify","Geo RES"],play:"Tank Support",
+ desc:"Eski Geo Archonu Rex Lapis. Oyunun en güçlü kalkan sağlayıcısı. Her takıma uyar.",
+ info:[{l:"Bölge",v:"Liyue"},{l:"Yıldız",v:"5★"},{l:"Silah",v:"Mızrak"},{l:"Tier",v:"S Tier"},{l:"Rol",v:"Support"},{l:"Zorluk",v:"Kolay"}],
+ talents:[{p:1,n:"Elemental Skill (E)",d:"Kalkan + Stele — Basılı tut",lvl:"6-8"},{p:2,n:"Elemental Burst (Q)",d:"Petrify + AOE Geo",lvl:"8-10"},{p:3,n:"Normal Attack",d:"Gereksiz",lvl:"1"}],
+ materials:{boss:{ico:"🪨",n:"Basalt Pillar",where:"Geo Hypostasis (Liyue Guyun)"}, gem:{ico:"💎",n:"Prithiva Topaz",where:"Geo Hypostasis & Primo Geovishap"},mat:{ico:"🌾",n:"Cor Lapis",where:"Liyue dağları, Mt. Tianheng"},mob:{ico:"🦎",n:"Slime Condensate → Crown",where:"Tüm bölgelerde Slime'lar"}},
+ weapons:[{ico:"🔱",n:"Staff of Homa",d:"5★ BiS agresif",rk:"BiS"},{ico:"🔱",n:"Vortex Vanquisher",d:"5★ Shield+ATK",rk:"A"},{ico:"🔱",n:"Black Tassel",d:"3★ F2P HP",rk:"A"},{ico:"🔱",n:"Favonius Lance",d:"4★ ER",rk:"B"}],
+ artifacts:[{n:"Tenacity of Millelith (4pc)",d:"HP +%20, takım ATK +%20"},{n:"Archaic Petra (2) + Tenacity (2)",d:"Geo +%15 + HP"}],
+ stats:[{l:"HP",v:"50.000+",p:"Birincil"},{l:"Energy Recharge",v:"%140+",p:"İkincil"},{l:"CRIT",v:"İsteğe",p:"Agresif"},{l:"Geo DMG",v:"İsteğe",p:"Agresif"}],
+ constellations:[{n:"Rock Backbone",d:"2 Stele aynı anda",pri:false},{n:"Stone Cradle",d:"Kalkan +%25",pri:true,badge:"Önemli"},{n:"Jade Shimmering",d:"E +3",pri:false},{n:"Topaz Unbreakable",d:"Q +%40",pri:false},{n:"Lazuli Herald",d:"Q +3",pri:false},{n:"Chrysos Bounty",d:"Kalkan → HP dönüşümü",pri:true,badge:"Güçlü"}],
+ teams:[{name:"Geo Core",slots:[{av:"🪨",n:"Zhongli",r:"Shield"},{av:"🪨",n:"Itto",r:"DPS"},{av:"🪨",n:"Gorou",r:"Buff"},{av:"🪨",n:"Albedo",r:"Sub"}],desc:"Tam Geo takımı."},{name:"Universal",slots:[{av:"🪨",n:"Zhongli",r:"Shield"},{av:"🦋",n:"Hu Tao",r:"DPS"},{av:"🌊",n:"Xingqiu",r:"Sub"},{av:"🌬️",n:"Yelan",r:"Sub"}],desc:"Her DPS ile kullanılır."}],
+ tips:[{ico:"🛡️",t:"Basılı E",d:"Stele + Shield aynı anda."},{ico:"🏠",t:"50k+ HP",d:"Kalkan gücü HP'ye orantılı."},{ico:"🎯",t:"Geo RES",d:"E ile hedef -%20 Geo direnç."},{ico:"📊",t:"Millelith",d:"Her yenilemede +%20 ATK buff."}]},
+
+{id:6,slug:"bennett",name:"Bennett",el:"Pyro",role:"Healer",wpn:"Kılıç",stars:4,tier:"S",diff:"Kolay",region:"Mondstadt",av:"💊",bg:"linear-gradient(135deg,#2a1205,#180904)",
+ tags:["ATK Buffer","Healer","Energy Battery"],play:"Heal & Buffer",
+ desc:"Oyunun tartışmasız en iyi 4★ karakteri. Q ile %20 ATK buff + heal sağlar.",
+ info:[{l:"Bölge",v:"Mondstadt"},{l:"Yıldız",v:"4★"},{l:"Silah",v:"Kılıç"},{l:"Tier",v:"S Tier"},{l:"Rol",v:"Healer"},{l:"Zorluk",v:"Kolay"}],
+ talents:[{p:1,n:"Elemental Burst (Q)",d:"ATK buff + Heal alanı",lvl:"9-10"},{p:2,n:"Elemental Skill (E)",d:"Enerji + Pyro uygulama",lvl:"6-8"},{p:3,n:"Normal Attack",d:"Gereksiz",lvl:"1"}],
+ materials:{boss:{ico:"💊",n:"Everflame Seed",where:"Pyro Regisvine (Wolvendom, Mondstadt)"}, gem:{ico:"💎",n:"Agnidus Agate",where:"Pyro Regisvine & Pyro Hypostasis"},mat:{ico:"🌹",n:"Windwheel Aster",where:"Mondstadt — Stormterror Lair yakını"},mob:{ico:"🦊",n:"Treasure Hoarder Insignia",where:"Treasure Hoarders (tüm bölgeler)"}},
+ weapons:[{ico:"🗡️",n:"Aquila Favonia",d:"5★ BiS Yüksek ATK",rk:"BiS"},{ico:"🗡️",n:"Skyward Blade",d:"5★ ER+ATK",rk:"A"},{ico:"🗡️",n:"Festering Desire",d:"4★ ER+Skill",rk:"A"},{ico:"🗡️",n:"Favonius Sword",d:"4★ Battery",rk:"B"}],
+ artifacts:[{n:"Noblesse Oblige (4pc)",d:"Q → Takım +%20 ATK"},{n:"Maiden Beloved (2) + Noblesse (2)",d:"Heal odaklı"}],
+ stats:[{l:"Energy Recharge",v:"%180+",p:"Birincil"},{l:"HP",v:"20.000+",p:"İkincil"},{l:"Baz ATK",v:"Yüksek",p:"Q buff için"},{l:"CRIT",v:"ASLA ALMA",p:"❌"}],
+ constellations:[{n:"Grand Expectation",d:"Q ATK buff +%20",pri:true,badge:"Önemli"},{n:"Impasse Conqueror",d:"E CD -%50",pri:false},{n:"Unstoppable Fervor",d:"E +3",pri:false},{n:"Unexpected Odyssey",d:"+%135 ATK hasar",pri:false},{n:"True Explorer",d:"Q +3",pri:false},{n:"Fire Ventures with Me",d:"⚠️ Fiziksel→Pyro DPS bozar",pri:false}],
+ teams:[{name:"Raiden National",slots:[{av:"💊",n:"Bennett",r:"Heal"},{av:"⚡",n:"Raiden",r:"Sub"},{av:"🔥",n:"Xiangling",r:"Sub"},{av:"🍁",n:"Kazuha",r:"Buff"}],desc:"Meta takımı."},{name:"Bennett+HuTao",slots:[{av:"💊",n:"Bennett",r:"Heal"},{av:"🦋",n:"Hu Tao",r:"DPS"},{av:"🌊",n:"Xingqiu",r:"Sub"},{av:"🍁",n:"Kazuha",r:"Buff"}],desc:"ATK buff + Heal."}],
+ tips:[{ico:"⚠️",t:"CRIT ASLA",d:"CRIT yerine HP ve ER al."},{ico:"🔥",t:"Q Alanı",d:"DPS'i Q alanında tut."},{ico:"📊",t:"%180 ER",d:"Her rotasyonda Q garantilenir."},{ico:"⚠️",t:"C6 Dikkat",d:"Fiziksel DPS kullanıyorsan C6 alma."}]}
+];
+
+const WEAPONS=[
+{n:"Staff of Homa",t:"Mızrak",s:5,ico:"🔱",atk:"608",sub:"CRIT DMG %66.2",d:"HP +%20. HP'nin %0.8'i ek ATK. HP <%50 ise ekstra +%1.",best:["Hu Tao","Zhongli","Raiden"]},
+{n:"Engulfing Lightning",t:"Mızrak",s:5,ico:"🔱",atk:"608",sub:"ER %55.1",d:"ER fazlası %28 oranında ATK'ya dönüşür. Q sonrası ER +%30.",best:["Raiden Shogun"]},
+{n:"Staff of Scarlet Sands",t:"Mızrak",s:5,ico:"🔱",atk:"542",sub:"CRIT Rate %44.1",d:"EM'nin %52'si ek ATK. Skill sonrası +3 stack (max 3).",best:["Hu Tao","Cyno"]},
+{n:"Primordial Jade Winged-Spear",t:"Mızrak",s:5,ico:"🔱",atk:"674",sub:"CRIT Rate %22.1",d:"Vuruş: ATK +%3.2 (max 7). Tam stack: +%12 tüm DMG.",best:["Xiao"]},
+{n:"The Catch",t:"Mızrak",s:4,ico:"🎣",atk:"510",sub:"ER %45.9",d:"Burst DMG +%16, Burst CRIT Rate +%6. Balıkçılıkla edinilir.",best:["Raiden","Xiangling"]},
+{n:"Deathmatch",t:"Mızrak",s:4,ico:"⚔️",atk:"454",sub:"CRIT Rate %36.8",d:"2+ düşman: ATK+DEF +%16. Tekil: ATK +%24.",best:["Hu Tao","Xiao"]},
+{n:"Elegy for the End",t:"Yay",s:5,ico:"🏹",atk:"608",sub:"ER %55.1",d:"EM +%60. 4 stack: Takıma EM +%100 ve ATK +%20.",best:["Venti","Yelan"]},
+{n:"Amos' Bow",t:"Yay",s:5,ico:"🏹",atk:"608",sub:"ATK %49.6",d:"Normal+Charged +%12. Her 0.1s ek +%8 (max 5).",best:["Ganyu","Tighnari"]},
+{n:"Polar Star",t:"Yay",s:5,ico:"🏹",atk:"608",sub:"CRIT Rate %33.1",d:"Skill+Burst DMG +%12. Stack ile ATK +%48.",best:["Childe","Tartaglia"]},
+{n:"Favonius Warbow",t:"Yay",s:4,ico:"🏹",atk:"454",sub:"ER %61.3",d:"CRIT vuruş: Enerji orb üret.",best:["Venti","Fischl"]},
+{n:"Stringless",t:"Yay",s:4,ico:"🏹",atk:"510",sub:"EM +165",d:"Skill+Burst DMG +%24.",best:["Venti","Fischl"]},
+{n:"Freedom-Sworn",t:"Kılıç",s:5,ico:"🗡️",atk:"608",sub:"EM +198",d:"Swirl stack: Takıma ATK+%20, CA/NA +%16.",best:["Kazuha"]},
+{n:"Mistsplitter's Reforged",t:"Kılıç",s:5,ico:"🗡️",atk:"674",sub:"CRIT DMG %44.1",d:"Element DMG +%12. Stack ile +%8/+%16/+%28.",best:["Ayaka","Kazuha"]},
+{n:"Aquila Favonia",t:"Kılıç",s:5,ico:"🗡️",atk:"674",sub:"Fiziksel +41.3%",d:"ATK +%20. Hasar alınca heal. CD 15s.",best:["Bennett","Jean"]},
+{n:"Iron Sting",t:"Kılıç",s:4,ico:"🗡️",atk:"510",sub:"EM +165",d:"Elem DMG sonrası +%6 tüm DMG (max 2).",best:["Kazuha","Sucrose"]},
+{n:"Favonius Sword",t:"Kılıç",s:4,ico:"🗡️",atk:"454",sub:"ER %61.3",d:"CRIT: Enerji orb. Battery seçeneği.",best:["Bennett","Jean"]},
+{n:"Wolf's Gravestone",t:"Claymore",s:5,ico:"🪓",atk:"608",sub:"ATK %49.6",d:"ATK +%20. Düşman <%30: Takım ATK +%40.",best:["Diluc","Noelle"]},
+{n:"Serpent Spine",t:"Claymore",s:4,ico:"🪓",atk:"510",sub:"CRIT Rate %27.6",d:"Her 4s DMG +%6 (max 5). Hasar alınca -1.",best:["Beidou","Eula"]},
+{n:"Favonius Greatsword",t:"Claymore",s:4,ico:"🪓",atk:"454",sub:"ER %61.3",d:"CRIT: Enerji orb.",best:["Diona","Noelle"]},
+{n:"Skyward Atlas",t:"Catalyst",s:5,ico:"📖",atk:"674",sub:"ATK %33.1",d:"Elem DMG +%12. Normal: Bulut çağırır +%160.",best:["Klee","Mona"]},
+{n:"Thrilling Tales of Dragon Slayers",t:"Catalyst",s:3,ico:"📖",atk:"401",sub:"HP +35.2%",d:"Karakter değişiminde yeni kişiye +%48 ATK. Support BiS.",best:["Kokomi","Nahida"]},
+{n:"Hakushin Ring",t:"Catalyst",s:4,ico:"📖",atk:"565",sub:"ER %30.6",d:"Electro swirl: İlgili elem +%10 DMG.",best:["Fischl","Lisa"]},
+{n:"Vortex Vanquisher",t:"Mızrak",s:5,ico:"🔱",atk:"608",sub:"ATK %49.6",d:"Shield aktifken +%20 ATK. Vuruş stack.",best:["Zhongli"]},
+{n:"Favonius Lance",t:"Mızrak",s:4,ico:"🔱",atk:"565",sub:"ER %30.6",d:"CRIT: Enerji orb.",best:["Zhongli","Shenhe"]}
+];
+
+const REGIONS=[
+{n:"Mondstadt",el:"Anemo",ico:"🌬️",grad:"linear-gradient(135deg,#1a3a4a,#0d2535)",ec:"#7ec8a4",
+ desc:"Özgürlük tanrısının kenti. Avrupa ortaçağından ilham alan mimari, şarap ve müzikle dolu.",
+ hl:["Windrise Ağacı","Dragonspine","Stormterror Lair","Cape Oath","Wolvendom"],
+ chars:["Venti","Diluc","Jean","Bennett","Fischl","Noelle","Razor","Klee","Albedo","Sucrose"]},
+{n:"Liyue",el:"Geo",ico:"🏮",grad:"linear-gradient(135deg,#2a1a08,#1a1005)",ec:"#f0b232",
+ desc:"Teyvat'ın ticaret başkenti. Zengin kültür, liman şehri ve Geo mimarisi.",
+ hl:["Liyue Harbor","Mt. Hulao","Jueyun Karst","Guyun Stone Forest","Golden House"],
+ chars:["Zhongli","Hu Tao","Xingqiu","Ganyu","Ningguang","Beidou","Keqing","Shenhe","Yelan","Baizhu"]},
+{n:"Inazuma",el:"Electro",ico:"⛩️",grad:"linear-gradient(135deg,#180838,#100028)",ec:"#c77dff",
+ desc:"Fırtına adaları. Sakoku politikası kaldırıldı, ama gelenekler hâlâ güçlü.",
+ hl:["Narukami Island","Enkanomiya","Seirai Island","Tsurumi Island","Grand Narukami Shrine"],
+ chars:["Raiden Shogun","Kazuha","Yoimiya","Gorou","Kokomi","Ayaka","Ayato","Kujou Sara","Thoma","Heizou"]},
+{n:"Sumeru",el:"Dendro",ico:"🌿",grad:"linear-gradient(135deg,#0d2010,#081508)",ec:"#a5c23d",
+ desc:"Bilgelik ve Dendro elementi. Akademya şehri ve tropikal ormanlar.",
+ hl:["Sumeru City","Aaru Village","Vanarana","Apam Woods","Desert of Hadramaveth"],
+ chars:["Nahida","Tighnari","Collei","Cyno","Candace","Nilou","Alhaitham","Layla","Faruzan","Wanderer"]},
+{n:"Fontaine",el:"Hydro",ico:"⚖️",grad:"linear-gradient(135deg,#0a1a2e,#05101e)",ec:"#4cc2f1",
+ desc:"Adalet ve Hydro. Furina'nın yönetimindeki görkemli su mimarisi.",
+ hl:["Court of Fontaine","Poisson","Merusea Village","Liffey Region","Opera Epiclese"],
+ chars:["Furina","Neuvillette","Navia","Lyney","Lynette","Freminet","Wriothesley","Charlotte","Chevreuse","Clorinde"]},
+{n:"Natlan",el:"Pyro",ico:"🔥",grad:"linear-gradient(135deg,#2a0d05,#1a0803)",ec:"#ef7a2b",
+ desc:"Savaş ve Pyro elementi. Muratalar'ın yönetimindeki volkanik bölge.",
+ hl:["Pozo City","Ocelot Clan","Volcano Peak","Night Kingdom","Flower-Feather Clan"],
+ chars:["Mualani","Kinich","Kachina","Xilonen","Chasca","Ororon","Mavuika","Citlali"]},
+{n:"Snezhnaya",el:"Cryo",ico:"❄️",grad:"linear-gradient(135deg,#0a1a2a,#050f1a)",ec:"#9ed9f7",
+ desc:"Tsaritsa'nın Cryo krallığı. Fatui organizasyonunun merkezi. Teyvat'ın en gizemli ulusu.",
+ hl:["Zapolyarny Palace","Northland Bank","Childe's Hometown","Harbor of Morepesok"],
+ chars:["Childe","Rosaria","Eula"]},
+{n:"Nod-Krai",el:"Kuuvahki",ico:"🌙",grad:"linear-gradient(135deg,#0a0d1a,#131625)",ec:"#b8c9f5",
+ desc:"Snezhnaya'nın güneyindeki özerk sınır toprakları. Ay enerjisi 'Kuuvahki' ile şekillenen gizemli bölge. Avrupa folklorü ve Slav mitolojisinden ilham alır.",
+ hl:["Nasha Town/Nashgorod","Frostmoon Sanctuary","Paha Isle","Final Night Cemetery","Clink-Clank Craftshop","Wild Hunt Territories"],
+ chars:["Lauma","Flins","Aino","Nefer","Columbina","Varka","Durin","Zibai","Jahoda","Skirk"]}
+];
+
+const NEWS=[
+{id:1,type:"patch",cls:"np",lbl:"Patch Notes",date:"25 Şub 2026",title:"v6.4 'Luna V' — Homeward, He Who Caught the Wind",exc:"25 Şubat 2026'da yayınlanan v6.4 ile Mondstadt'a geri döndük! Yeni 5★ Varka (Anemo/Claymore), Stygian Onslaught end-game içeriği ve Windblume Festivali bu yamada.",tags:["v6.4","LunaV","Varka","Mondstadt"]},
+{id:2,type:"char",cls:"nc",lbl:"Yeni Karakter",date:"25 Şub 2026",title:"Varka — Knights of Favonius Grand Master Çıktı!",exc:"Mondstadt'ın efsanevi Grand Master'ı Varka artık oynanabilir! 5★ Anemo Claymore karakteri. Phase 1 bannerı 17 Mart'a kadar aktifti, artık Skirk Phase 2'si aktif.",tags:["Varka","Anemo","5★","Yeni","v6.4"]},
+{id:3,type:"char",cls:"nc",lbl:"Rerun Banner",date:"17 Mar 2026",title:"Skirk & Escoffier Rerun — Phase 2 Aktif!",exc:"17 Mart – 7 Nisan 2026 arası Skirk (Cryo/Kılıç) ve Escoffier (Cryo/Mızrak) rerun bannerları aktif. İkisi de Freeze takımlarında güçlü sinerji sunuyor.",tags:["Skirk","Escoffier","Cryo","Rerun","v6.4"]},
+{id:4,type:"event",cls:"ne",lbl:"Etkinlik",date:"27 Şub 2026",title:"Windblume Festivali 2026 — 960 Primogem!",exc:"Ana etkinlik 'Homeward, He Who Caught the Wind' ile Mondstadt'ta şenlik! Kokteyl yapma, kuş uçurma, dövüş modu. Toplamda 960+ Primogem kazanılabilir.",tags:["Windblume","Mondstadt","Primogem","Etkinlik"]},
+{id:5,type:"event",cls:"ne",lbl:"Etkinlik",date:"1 Mar 2026",title:"Imaginarium Theater Sezon 1 — Mart 2026",exc:"Gerekli elementler: Electro, Cryo, Anemo. Özel misafirler: Furina, Columbina, Durin, Bennett. 450 Primogem ödülü. Ayaka, Emilie, Sayu ve Ororon yeni Thespian Trick aldı.",tags:["ImaginariumTheater","Electro","Cryo","Anemo","Primogem"]},
+{id:6,type:"event",cls:"ne",lbl:"Etkinlik",date:"23 Mar 2026",title:"Operation Stronghold Defense — Aino'nun Deposu",exc:"23 Mart'ta başlayan taktik savunma etkinliği. Mekanizma yerleştirerek düşman dalgalarını durdur. Primogem ve malzeme ödülleri.",tags:["StrongholdDefense","Taktik","Etkinlik","v6.4"]},
+{id:7,type:"event",cls:"ne",lbl:"Etkinlik",date:"1 Nis 2026",title:"Imaginarium Theater Sezon 2 — Nisan 2026",exc:"Cryo Crystal Blessing güçlendi! Özel misafirler: Chasca, Sucrose, Klee, Lauma. Sigewinne, Itto, Citlali ve Kuki Shinobu yeni Thespian Trick kazandı.",tags:["ImaginariumTheater","Chasca","Lauma","Nisan"]},
+{id:8,type:"patch",cls:"np",lbl:"Yakında",date:"8 Nis 2026",title:"v6.5 'Luna VI' — Linnea & Lauma Geliyor!",exc:"8 Nisan 2026'da v6.5 başlıyor. Phase 1'de yeni karakter Linnea ve Lauma yer alacak. Mondstadt sonrası yeni bölge hikayesi devam ediyor.",tags:["v6.5","LunaVI","Linnea","Lauma","Yakında"]}
+]
+
+const DEF_BANNERS=[
+{n:"Skirk & Escoffier Rerun",ico:"⚔️",lbl:"Karakter Banner",end:new Date("2026-04-07T04:59:00")},
+{n:"Epitome Invocation",ico:"🗡️",lbl:"Silah Banner",end:new Date("2026-04-07T04:59:00")},
+{n:"Linnea & Lauma",ico:"🪨",lbl:"Karakter Banner v6.5",end:new Date("2026-04-29T04:59:00")},
+];
+// Read from admin panel
+const adminBanners=lsGet('sw_admin_banners',null);
+const BANNERS=adminBanners?adminBanners.map(b=>({n:b.name,ico:b.ico,lbl:b.lbl,end:b.end?new Date(b.end):new Date(Date.now()+7*864e5)})):DEF_BANNERS;
+
+// Read discord settings from admin panel
+function getDiscordCfg(){
+  const d=lsGet('sw_admin_discord',null);
+  if(!d)return{
+    name:'StormWind',invite:null,online:0,total:0,variation:5,
+    msgs:[
+      {av:"🎵",u:"VentiMain",m:"Venti artifact seti denedim, CV 210 çıktı!"},
+      {av:"🦋",u:"HuTaoLover",m:"Hu Tao C1 mi C4 mü? Yardım 😅"},
+      {av:"⚡",u:"RaidenFan",m:"National takımı deneyin, meta!"},
+      {av:"🍁",u:"KazuhaMains",m:"Kazuha 1000 EM geçti 🌟"},
+      {av:"🪨",u:"ZhongliGeo",m:"Zhongli shield 80k HP güçlü"},
+      {av:"💊",u:"BennettBuff",m:"C6 Bennett almak hata mı?"},
+    ]
+  };
+  const msgs=(d.msgs||'').split('\n').filter(l=>l.includes('|')).map(l=>{const[u,...mp]=l.split('|');const emojis=['🌬️','🔥','⚡','❄️','💧','🪨'];return{av:emojis[Math.floor(Math.random()*emojis.length)],u:u.trim(),m:mp.join('|').trim()};});
+  return{name:d.name||'StormWind',invite:d.invite||null,online:d.online||0,total:d.total||0,variation:d.variation||5,msgs:msgs.length?msgs:[{av:'🌬️',u:'Gezgin',m:'Merhaba!'}]};
+}
+const DISCORD_MSGS=getDiscordCfg().msgs;
+
+/* ══════════════════════════════════════
+   STATE
+══════════════════════════════════════ */
+let aRole='all', aElem='all', aTier='all', sq='', favOnly=false;
+let favs=new Set(lsGet('sw_favs',[]));
+let cmpList=[];
+let pickSlot=0;
+let curChar=null;
+let pwaEvt=null;
+let notifOpen=false;
+let curView='c';
+let curPage='home';
+let wFilter='all';
+let nFilter='all';
+let dwIdx=0;
+let ptclOn=true;
+let tlDragId=null;
+
+/* ══════════════════════════════════════
+   UTILS
+══════════════════════════════════════ */
+const EI={Anemo:"🌬️",Hydro:"💧",Pyro:"🔥",Cryo:"❄️",Electro:"⚡",Geo:"🪨",Dendro:"🌿"};
+const ei=e=>EI[e]||"✨";
+const rkCls=r=>({BiS:"rBis",A:"rA",B:"rB",C:"rC"}[r]||"rC");
+const tierCls=t=>({S:"ts",A:"ta",B:"tb"}[t]||"tb");
+const diffCls=d=>({Kolay:"de",Orta:"dm",Zor:"dh"}[d]||"de");
+
+function lsGet(k,d){try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}}
+function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}
+
+/* ══════════════════════════════════════
+   LOADER
+══════════════════════════════════════ */
+(function initLoader(){
+  const bar=document.getElementById('ldBar');
+  let pct=0;
+  const iv=setInterval(()=>{
+    pct+=Math.random()*18;
+    if(pct>=100){pct=100;clearInterval(iv);setTimeout(()=>document.getElementById('loader').classList.add('gone'),600);}
+    bar.style.width=pct+'%';
+  },120);
+})();
+
+/* ══════════════════════════════════════
+   PARTICLES (rising from bottom)
+══════════════════════════════════════ */
+function initParticles(){
+  const c=document.getElementById('ptcls');
+  c.innerHTML='';
+  if(!ptclOn)return;
+  const cols=['#A8D8EA','#B5EAD7','#C9B1D9','#FFE4A0','#A8D8EA'];
+  for(let i=0;i<28;i++){
+    const p=document.createElement('div');p.className='ptcl';
+    const sz=1.5+Math.random()*3;
+    const left=Math.random()*100;
+    const dur=8+Math.random()*12;
+    const delay=Math.random()*15;
+    const dx=(Math.random()-.5)*120;
+    p.style.cssText=`left:${left}%;width:${sz}px;height:${sz}px;background:${cols[i%5]};--d:${dur}s;--dl:${delay}s;--dx:${dx}px;opacity:0`;
+    c.appendChild(p);
+  }
+}
+function togglePtcl(on){ptclOn=on;initParticles();}
+
+/* ══════════════════════════════════════
+   THEME
+══════════════════════════════════════ */
+function initTheme(){
+  const t=lsGet('sw_theme','dark');
+  document.getElementById('root').setAttribute('data-t',t);
+  updateThemeBtns(t);
+}
+function toggleTheme(){
+  const cur=document.getElementById('root').getAttribute('data-t');
+  const next=cur==='dark'?'light':'dark';
+  document.getElementById('root').setAttribute('data-t',next);
+  lsSet('sw_theme',next);
+  updateThemeBtns(next);
+  showToast(next==='dark'?'🌙 Karanlık mod':'☀️ Aydınlık mod');
+}
+function updateThemeBtns(t){
+  const isDark=t==='dark';
+  const tb=document.getElementById('themeBtn');
+  const tsb=document.getElementById('themeSettingBtn');
+  if(tb)tb.textContent=isDark?'🌙':'☀️';
+  if(tsb)tsb.textContent=isDark?'☀️ Aydınlığa Geç':'🌙 Karanlığa Geç';
+}
+
+/* ══════════════════════════════════════
+   TOAST
+══════════════════════════════════════ */
+let toastTmr;
+function showToast(msg){
+  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+  clearTimeout(toastTmr);toastTmr=setTimeout(()=>t.classList.remove('show'),2400);
+}
+
+/* ══════════════════════════════════════
+   PWA
+══════════════════════════════════════ */
+function initPWA(){
+  window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();pwaEvt=e;if(!lsGet('sw_pwa',false))setTimeout(()=>document.getElementById('pwa').classList.add('show'),5000);});
+}
+function installPWA(){if(pwaEvt){pwaEvt.prompt();}else{showToast('💡 Tarayıcı menüsü > Ana Ekrana Ekle');dismissPWA();}}
+function dismissPWA(){lsSet('sw_pwa',true);document.getElementById('pwa').classList.remove('show');}
+
+/* ══════════════════════════════════════
+   NOTIFICATIONS
+══════════════════════════════════════ */
+const NOTIFS=[
+{id:'n1',t:'i',ico:'🌬️',title:'Hoş Geldin!',body:'Artifact hesaplayıcıyı denedin mi?',time:'Az önce'},
+{id:'n2',t:'s',ico:'✨',title:'Materyal Rehberi Eklendi',body:'Kasılma materyallerini gör!',time:'1 saat önce'},
+{id:'n3',t:'w',ico:'⚡',title:'Meta Güncelleme',body:'Raiden Hyperbloom build yenilendi.',time:'3 saat önce'},
+{id:'n4',t:'i',ico:'🆕',title:'v5.5 Patch Notes',body:"Natlan'ın yeni bölgeleri açıldı!",time:'1 gün önce'},
+];
+function initNotifs(){
+  const rd=lsGet('sw_nrd',[]);
+  if(NOTIFS.some(n=>!rd.includes(n.id)))document.getElementById('ndot').classList.add('on');
+  renderNotifs();
+}
+function renderNotifs(){
+  const rd=lsGet('sw_nrd',[]);
+  const uc=NOTIFS.filter(n=>!rd.includes(n.id)).length;
+  document.getElementById('npanel').innerHTML=`<div class="nhd"><h4>🔔 Bildirimler${uc?` <span style="background:rgba(255,107,107,.15);color:#ff8080;padding:.07rem .45rem;border-radius:100px;font-size:.6rem;font-family:'Nunito',sans-serif">${uc}</span>`:''}</h4>${uc?`<button class="nmark" onclick="markAll()">Tümü Oku</button>`:''}</div>`+
+  NOTIFS.map(n=>{const r=rd.includes(n.id);return`<div class="nitem${r?'':' unread'}" onclick="markOne('${n.id}')"><div class="nico ${n.t}">${n.ico}</div><div class="nbody" style="flex:1;min-width:0"><strong>${n.title}</strong><span>${n.body}</span><div class="ntime">${n.time}</div></div>${r?'':'<div class="nudot"></div>'}</div>`;}).join('');
+}
+function toggleNotif(){notifOpen=!notifOpen;document.getElementById('npanel').classList.toggle('open',notifOpen);}
+function markOne(id){const r=lsGet('sw_nrd',[]);if(!r.includes(id)){r.push(id);lsSet('sw_nrd',r);}document.getElementById('ndot').classList.toggle('on',NOTIFS.some(n=>!r.includes(n.id)));renderNotifs();}
+function markAll(){lsSet('sw_nrd',NOTIFS.map(n=>n.id));document.getElementById('ndot').classList.remove('on');renderNotifs();}
+document.addEventListener('click',e=>{
+  if(notifOpen&&!e.target.closest('.nw')){notifOpen=false;document.getElementById('npanel').classList.remove('open');}
+  if(!e.target.closest('.sw'))document.getElementById('shDrop').classList.remove('has');
+});
+
+/* ══════════════════════════════════════
+   DISCORD WIDGET
+══════════════════════════════════════ */
+function initDiscord(){
+  renderDW();
+  setInterval(()=>{
+    const msgs=getDiscordCfg().msgs;
+    dwIdx=(dwIdx+1)%msgs.length;
+    renderDW();
+  },4500);
+}
+function renderDW(){
+  const el=document.getElementById('dwWrap');if(!el)return;
+  const cfg=getDiscordCfg();
+  const msgs=cfg.msgs;
+  const m1=msgs[dwIdx%msgs.length],m2=msgs[(dwIdx+1)%msgs.length];
+  const onlineBase=cfg.online||0;
+  const totalFmt=cfg.total?cfg.total.toLocaleString('tr-TR'):'—';
+  const onlineFmt=onlineBase?String(onlineBase+Math.floor(Math.random()*(cfg.variation||0)*2)-(cfg.variation||0)):'—';
+  const joinAction=cfg.invite?`window.open('${cfg.invite}','_blank')`:"showToast('💡 Discord linki admin panelinden ayarlanabilir')";
+  el.innerHTML=`<div class="dw-logo">🎮</div><div class="dw-info">
+    <div class="dw-name">${cfg.name} Discord</div>
+    <div class="dw-stats"><div class="dw-stat"><div class="dot-g"></div><span id="dwOnline">${onlineFmt}</span> Çevrimiçi</div><div class="dw-stat"><div class="dot-gr"></div>${totalFmt} Üye</div></div>
+    <div class="dw-msgs">${[m1,m2].map(m=>`<div class="dw-msg"><div class="dw-av">${m.av}</div><div><strong>${m.u}:</strong><span>${m.m}</span></div></div>`).join('')}</div>
+  </div><div class="dw-actions">
+    <button class="dw-join" onclick="${joinAction}">Discord'a Katıl</button>
+    <div class="dw-status">🟢 Aktif</div>
+  </div>`;
+}
+
+/* ══════════════════════════════════════
+   SEARCH HISTORY
+══════════════════════════════════════ */
+function getSH(){return lsGet('sw_sh',[]);}
+function addSH(q){if(!q||q.length<2)return;let h=getSH().filter(x=>x!==q);h.unshift(q);lsSet('sw_sh',h.slice(0,8));}
+function renderSHDrop(){
+  const h=getSH(),el=document.getElementById('shDrop');
+  if(!h.length){el.classList.remove('has');return;}
+  el.innerHTML=`<div class="sh-hd"><span>Son Aramalar</span><button class="sh-clr" onclick="clearSH(event)">Temizle</button></div>`+h.map(q=>`<div class="sh-it" onclick="applySH('${q.replace(/'/g,"\\'")}')">🔍 ${q}</div>`).join('');
+  el.classList.add('has');
+}
+function onSrch(){sq=document.getElementById('srch').value;renderSHDrop();render();}
+function onSrchKey(e){if(e.key==='Enter'&&sq.trim()){addSH(sq.trim());renderSHDrop();}}
+function applySH(q){document.getElementById('srch').value=q;sq=q;render();document.getElementById('shDrop').classList.remove('has');}
+function clearSH(e){e.stopPropagation();lsSet('sw_sh',[]);document.getElementById('shDrop').classList.remove('has');}
+
+/* ══════════════════════════════════════
+   RECENT
+══════════════════════════════════════ */
+function getRecent(){return lsGet('sw_recent',[]);}
+function addRecent(id){let r=getRecent().filter(x=>x!==id);r.unshift(id);lsSet('sw_recent',r.slice(0,8));renderRecent();}
+function renderRecent(){
+  const ids=getRecent(),sec=document.getElementById('recentSec');
+  if(!ids.length){sec.style.display='none';return;}
+  sec.style.display='block';
+  document.getElementById('recentRow').innerHTML=ids.map(id=>{const c=CHARS.find(x=>x.id===id);if(!c)return'';
+    return`<div class="recent-item" onclick="openChar(${c.id})"><div class="rec-av">${c.av}</div><div class="rec-info"><strong>${c.name}</strong><span>${ei(c.el)} ${c.el}</span></div></div>`;}).join('');
+}
+function clearRecent(){lsSet('sw_recent',[]);document.getElementById('recentSec').style.display='none';}
+
+/* ══════════════════════════════════════
+   HELPFUL VOTES
+══════════════════════════════════════ */
+function getVote(id){return lsGet('sw_v_'+id,{up:0,down:0,voted:null});}
+function doVote(id,dir,src){
+  const v=getVote(id);
+  if(v.voted===dir){showToast('Zaten oyladın!');return;}
+  if(v.voted)v[v.voted]--;
+  v[dir]++;v.voted=dir;lsSet('sw_v_'+id,v);
+  showToast(dir==='up'?'👍 Faydalı!':'👎 Geri bildirim alındı');
+  if(src==='modal')renderMHelpful(id);else render();
+}
+function renderMHelpful(id){
+  const el=document.getElementById('mHelpfulBox');if(!el)return;
+  const v=getVote(id),tot=v.up+v.down,pct=tot?Math.round(v.up/tot*100):0;
+  el.innerHTML=`<div class="mh-txt"><strong>Bu rehber faydalı mıydı?</strong><span>${tot?`${v.up} kişi faydalı buldu (${pct}%)`:'Henüz oy yok'}</span></div>
+    <div class="mh-btns"><button class="mhb u${v.voted==='up'?' on':''}" onclick="doVote(${id},'up','modal')">👍 ${v.up||''}</button><button class="mhb d${v.voted==='down'?' on':''}" onclick="doVote(${id},'down','modal')">👎 ${v.down||''}</button></div>`;
+}
+
+/* ══════════════════════════════════════
+   FAVORITES & FILTERS
+══════════════════════════════════════ */
+function toggleFav(id,e){
+  e.stopPropagation();
+  favs.has(id)?favs.delete(id):favs.add(id);
+  lsSet('sw_favs',[...favs]);
+  showToast(favs.has(id)?'❤️ Favorilere eklendi':'💔 Favorilerden çıkarıldı');
+  render();
+}
+function toggleFavF(btn){favOnly=!favOnly;btn.classList.toggle('fav-on',favOnly);render();}
+function sf(type,val,btn){
+  if(type==='role'){aRole=val;document.querySelectorAll('#roleF .fb').forEach(b=>b.classList.remove('on'));}
+  else if(type==='elem'){aElem=val;document.querySelectorAll('#elemF .fb').forEach(b=>b.classList.remove('on'));}
+  else if(type==='tier'){aTier=val;document.querySelectorAll('#tierF .fb:not(#favFB)').forEach(b=>b.classList.remove('on'));}
+  btn.classList.add('on');render();
+}
+
+/* ══════════════════════════════════════
+   COMPARE
+══════════════════════════════════════ */
+function toggleCmp(id,e){
+  e.stopPropagation();
+  const i=cmpList.indexOf(id);
+  if(i>=0){cmpList.splice(i,1);showToast('Karşılaştırmadan çıkarıldı');}
+  else if(cmpList.length<2){cmpList.push(id);showToast('Karşılaştırmaya eklendi');}
+  else{showToast('⚠️ Max 2 karakter');return;}
+  updateCmpBtn();render();
+}
+function updateCmpBtn(){const b=document.getElementById('cmpBtn'),s=document.getElementById('cmpCnt');s.textContent=cmpList.length?`(${cmpList.length}/2)`:'';b.classList.toggle('on',cmpList.length>0);}
+function openCmp(){renderCmp();openOv('cmpOv');}
+function closeCmp(){closeOv('cmpOv');}
+function renderCmp(){
+  const c1=cmpList[0]?CHARS.find(x=>x.id===cmpList[0]):null;
+  const c2=cmpList[1]?CHARS.find(x=>x.id===cmpList[1]):null;
+  const slot=(c,i)=>c?`<div class="cslot filled"><div style="font-size:2.5rem">${c.av}</div><div style="font-family:'Cinzel',serif;font-size:.92rem;font-weight:700">${c.name}</div><div style="font-size:.68rem;color:var(--tx2)">${ei(c.el)} ${c.el} · ${c.role}</div><button class="cslot-clr" onclick="clearCmpSlot(${i})">✕ Kaldır</button></div>`:`<div class="cslot" onclick="openPicker(${i})"><div style="font-size:2rem;opacity:.3">⊕</div><div style="font-size:.76rem;color:var(--tx3);font-weight:600">Karakter seç</div></div>`;
+  let rows='';
+  if(c1&&c2){
+    const to={S:3,A:2,B:1},dc={Kolay:1,Orta:2,Zor:3};
+    const data=[{l:'Element',v1:`${ei(c1.el)} ${c1.el}`,v2:`${ei(c2.el)} ${c2.el}`},{l:'Rol',v1:c1.role,v2:c2.role},{l:'Silah',v1:c1.wpn,v2:c2.wpn},{l:'Tier',v1:c1.tier+' Tier',v2:c2.tier+' Tier',ct:'tier'},{l:'Zorluk',v1:c1.diff,v2:c2.diff,ct:'diff'},{l:'Bölge',v1:c1.region,v2:c2.region}];
+    rows=`<div class="chdr"><div class="chdr-cell" style="background:${c1.bg}"><div class="chav">${c1.av}</div><div class="chn">${c1.name}</div><div class="chm">${c1.tier} · ${c1.role}</div></div><div class="chdr-cell" style="background:${c2.bg}"><div class="chav">${c2.av}</div><div class="chn">${c2.name}</div><div class="chm">${c2.tier} · ${c2.role}</div></div></div>
+    <div class="csect">Karşılaştırma</div>`+data.map(r=>{let b1=false,b2=false;if(r.ct==='tier'){b1=to[c1.tier]>to[c2.tier];b2=to[c2.tier]>to[c1.tier];}if(r.ct==='diff'){b1=dc[c1.diff]<dc[c2.diff];b2=dc[c2.diff]<dc[c1.diff];}return`<div class="crow"><div class="ccell${b1?' bet':''}"><div class="ccl">${c1.name} · ${r.l}</div><div class="ccv">${r.v1}</div></div><div class="ccell${b2?' bet':''}"><div class="ccl">${c2.name} · ${r.l}</div><div class="ccv">${r.v2}</div></div></div>`;}).join('')+`<p style="font-size:.68rem;color:var(--tx3);text-align:center;margin-top:.5rem">💡 Yeşil = daha iyi değer</p>`;
+  }
+  document.getElementById('cmpBody').innerHTML=`<div class="cslots">${slot(c1,0)}${slot(c2,1)}</div>${rows}`;
+}
+function clearCmpSlot(i){cmpList.splice(i,1);updateCmpBtn();render();renderCmp();}
+function openPicker(s){pickSlot=s;document.getElementById('pickerGrid').innerHTML=CHARS.filter(c=>!cmpList.includes(c.id)).map(c=>`<div class="pi" onclick="pickChar(${c.id})"><div class="pav">${c.av}</div><div class="pn">${c.name}</div><div class="pe">${ei(c.el)} ${c.el}</div></div>`).join('');document.getElementById('pickerOv').classList.add('open');}
+function pickChar(id){if(cmpList.length<=pickSlot)cmpList.push(id);else cmpList[pickSlot]=id;document.getElementById('pickerOv').classList.remove('open');updateCmpBtn();render();renderCmp();}
+
+/* ══════════════════════════════════════
+   VIEW TOGGLE
+══════════════════════════════════════ */
+function setV(v){
+  curView=v;
+  document.getElementById('vtC').classList.toggle('on',v==='c');
+  document.getElementById('vtL').classList.toggle('on',v==='l');
+  document.getElementById('cgrid').classList.toggle('lv',v==='l');
+}
+function toggleAnim(on){document.querySelectorAll('.cgrid').forEach(g=>{g.style.setProperty('--cin-dur',on?'.5s':'0s');});}
+
+/* ══════════════════════════════════════
+   BANNERS
+══════════════════════════════════════ */
+function renderBanners(){
+  document.getElementById('bnrGrid').innerHTML=BANNERS.map((b,i)=>`<div class="bnr-card"><div class="bnr-ico">${b.ico}</div><div class="bnr-info"><div class="bnr-lbl">${b.lbl}</div><div class="bnr-name">${b.n}</div><div class="bnr-timer" id="bt${i}"></div><div class="bnr-prog"><div class="bnr-fill" id="bp${i}" style="width:0%"></div></div></div></div>`).join('');
+  updateTimers();
+}
+function updateTimers(){
+  BANNERS.forEach((b,i)=>{
+    const d=b.end-new Date(),el=document.getElementById('bt'+i),bp=document.getElementById('bp'+i);
+    if(!el)return;
+    if(d<=0){el.innerHTML="<span style='font-size:.7rem;color:var(--tx2)'>Bitti</span>";return;}
+    const dy=Math.max(0,Math.floor(d/864e5)),h=Math.max(0,Math.floor((d%864e5)/36e5)),m=Math.max(0,Math.floor((d%36e5)/6e4)),s=Math.max(0,Math.floor((d%6e4)/1e3));
+    el.innerHTML=[['Gün',dy],['Saat',h],['Dak',m],['Sn',s]].map(([u,v])=>`<div class="tu"><div class="tv">${String(v).padStart(2,'0')}</div><div class="tl">${u}</div></div>`).join('');
+    if(bp)bp.style.width=Math.min(100,(1-d/(21*864e5))*100)+'%';
+  });
+}
+setInterval(updateTimers,1000);
+
+/* ══════════════════════════════════════
+   RENDER CHARS
+══════════════════════════════════════ */
+function getCharImg(c){
+  const imgs=lsGet('sw_admin_imgs',{});
+  const url=imgs[c.id]||'';
+  if(url)return`<img src="${url}" alt="${c.name}" style="width:90px;height:90px;object-fit:cover;object-position:top center;position:relative;z-index:1;filter:drop-shadow(0 4px 18px rgba(0,0,0,.45));border-radius:8px;" onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<div class=cav>${c.av}</div>')">`;
+  return`<div class="cav">${c.av}</div>`;
+}
+function render(){
+  const q=sq.toLowerCase();
+  const filtered=CHARS.filter(c=>{
+    if(aRole!=='all'&&c.role!==aRole)return false;
+    if(aElem!=='all'&&c.el!==aElem)return false;
+    if(aTier!=='all'&&c.tier!==aTier)return false;
+    if(favOnly&&!favs.has(c.id))return false;
+    if(q&&![c.name,...c.tags,c.el,c.region].some(x=>x.toLowerCase().includes(q)))return false;
+    return true;
+  });
+  document.getElementById('cntBadge').textContent=filtered.length+' karakter';
+  const g=document.getElementById('cgrid');
+  if(!filtered.length){g.innerHTML=`<div class="empty"><span>${favOnly?'💔':'🔍'}</span><p>${favOnly?'Favori bulunamadı.':'Sonuç bulunamadı.'}</p></div>`;return;}
+  g.innerHTML=filtered.map((c,i)=>{
+    const fav=favs.has(c.id),cmp=cmpList.includes(c.id),v=getVote(c.id);
+    return`<div class="cc" data-id="${c.id}" style="animation-delay:${i*.06}s" onclick="openChar(${c.id})">
+      <div class="ct"><div class="cbg" style="background:${c.bg}"></div><div class="cov"></div>
+        <div class="cstars">${'⭐'.repeat(c.stars)}</div>
+        <div class="celem">${ei(c.el)}</div>
+        <div class="cfav${fav?' on':''}" onclick="toggleFav(${c.id},event)">${fav?'❤️':'🤍'}</div>
+        ${getCharImg(c)}
+        <div class="ctier ${tierCls(c.tier)}">${c.tier}</div>
+        <div class="ccmp${cmp?' on':''}" onclick="toggleCmp(${c.id},event)" title="Karşılaştır">${cmp?'✓':'⊕'}</div>
+        <div class="cdiff ${diffCls(c.diff)}">${c.diff}</div>
+      </div>
+      <div class="cbody">
+        <div class="cname">${c.name}</div>
+        <div class="cmeta">${ei(c.el)} ${c.el}<div class="dot"></div>${c.role}<div class="dot"></div>${c.wpn}</div>
+        <div class="ctags">${c.tags.map(t=>`<span class="ctag">${t}</span>`).join('')}</div>
+        <div class="cfoot"><span class="cplay">🎮 ${c.play}</span><button class="ccta" onclick="openChar(${c.id});event.stopPropagation()">Rehber →</button></div>
+        <div class="chelpful"><span class="hl">Faydalı mı?</span>
+          <button class="hbtn u${v.voted==='up'?' on':''}" onclick="doVote(${c.id},'up','card');event.stopPropagation()">👍${v.up?' '+v.up:''}</button>
+          <button class="hbtn d${v.voted==='down'?' on':''}" onclick="doVote(${c.id},'down','card');event.stopPropagation()">👎${v.down?' '+v.down:''}</button>
+        </div>
+      </div>
+    </div>`;}).join('');
+  if(curView==='l')g.classList.add('lv');
+}
+
+/* ══════════════════════════════════════
+   CHAR MODAL — OPEN / CLOSE
+══════════════════════════════════════ */
+function openChar(id){
+  const c=CHARS.find(x=>x.id===id);if(!c)return;
+  curChar=id;addRecent(id);
+  // head - show image if available, else emoji
+  const av=document.getElementById('mav');
+  const imgs=lsGet('sw_admin_imgs',{});
+  const charImgUrl=imgs[c.id]||'';
+  if(charImgUrl){
+    av.style.background=c.bg;
+    av.style.padding='0';av.style.overflow='hidden';
+    av.innerHTML=`<img src="${charImgUrl}" alt="${c.name}" style="width:100%;height:100%;object-fit:cover;object-position:top center;display:block;" onerror="this.parentNode.style.padding='';this.parentNode.textContent='${c.av}'">`;
+  } else {
+    av.style.background=c.bg;av.style.padding='';av.innerHTML='';av.textContent=c.av;
+  }
+  document.getElementById('mname').textContent=c.name;
+  document.getElementById('mmeta').textContent=`${ei(c.el)} ${c.el} · ${c.role} · ${c.wpn} · ${c.stars}★`;
+  // tabs — 7 tabs
+  const TABS=['🗺️ Genel','⚔️ Build','🧪 Materyaller','✨ Const.','👥 Takımlar','💡 İpuçları','💬 Yorumlar'];
+  document.getElementById('mtabs').innerHTML=TABS.map((t,i)=>`<button class="mtab${i===0?' on':''}" onclick="swTab(${i},this,${id})">${t}</button>`).join('');
+  // panels
+  document.getElementById('mpanels').innerHTML=`
+    <div class="mpanel on" id="tp0">${panelOv(c)}</div>
+    <div class="mpanel" id="tp1">${panelBuild(c)}</div>
+    <div class="mpanel" id="tp2">${panelMats(c)}</div>
+    <div class="mpanel" id="tp3">${panelConst(c)}</div>
+    <div class="mpanel" id="tp4">${panelTeams(c)}</div>
+    <div class="mpanel" id="tp5">${panelTips(c)}</div>
+    <div class="mpanel" id="tp6"><div id="cmtBox"></div></div>`;
+  renderMHelpful(id);
+  renderComments(id);
+  openOv('charOv');
+}
+function swTab(i,btn,charId){
+  document.querySelectorAll('.mtab').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('.mpanel').forEach(p=>p.classList.remove('on'));
+  btn.classList.add('on');document.getElementById('tp'+i).classList.add('on');
+  document.getElementById('mpanels').scrollTop=0;
+  if(i===6)renderComments(charId);
+}
+function closeChar(){closeOv('charOv');curChar=null;}
+function shareChar(){
+  const c=CHARS.find(x=>x.id===curChar);if(!c)return;
+  const txt=`StormWind — ${c.name} Rehberi: genshin rehber`;
+  if(navigator.clipboard)navigator.clipboard.writeText(txt).then(()=>showToast('🔗 Link kopyalandı!')).catch(()=>showToast('🔗 Kopyalanamadı'));
+  else showToast('🔗 '+c.name+' rehberi');
+}
+
+/* ══════════════════════════════════════
+   MODAL PANELS
+══════════════════════════════════════ */
+function panelOv(c){
+  return`<div class="m-helpful" id="mHelpfulBox"><div class="mh-txt"><strong>Bu rehber faydalı mıydı?</strong><span>Yükleniyor…</span></div></div>
+  <div style="display:flex;gap:1rem;margin-bottom:1.1rem;flex-wrap:wrap">
+    <div style="width:76px;height:76px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:2.7rem;border:1px solid var(--br);flex-shrink:0;background:${c.bg}">${c.av}</div>
+    <div style="flex:1;min-width:0">
+      <h3 style="font-family:'Cinzel',serif;font-size:1.28rem;font-weight:700;margin-bottom:.22rem">${c.name}</h3>
+      <p style="font-size:.76rem;color:var(--tx2);line-height:1.65;margin-bottom:.62rem">${c.desc}</p>
+      <div style="display:flex;gap:.3rem;flex-wrap:wrap">${[ei(c.el)+' '+c.el,'⚔️ '+c.role,'🗡️ '+c.wpn,c.tier+' Tier','🎮 '+c.diff].map(b=>`<span style="background:rgba(168,216,234,.1);border:1px solid var(--br2);border-radius:100px;padding:.18rem .65rem;font-size:.63rem;font-weight:700;color:var(--a)">${b}</span>`).join('')}</div>
+    </div>
+  </div>
+  <div class="slbl">Karakter Bilgisi</div>
+  <div class="igrid">${c.info.map(i=>`<div class="ic"><div class="il">${i.l}</div><div class="iv">${i.v}</div></div>`).join('')}</div>
+  <div class="slbl">Yetenek Önceliği</div>
+  ${c.talents.map(t=>`<div class="trow"><div class="tpri">${t.p}</div><div class="ti"><strong>${t.n}</strong><span>${t.d}</span></div><span class="tlvl">Lv.${t.lvl}</span></div>`).join('')}`;
+}
+function panelBuild(c){
+  return`<div class="slbl">En İyi Silahlar</div>
+  ${c.weapons.map(w=>`<div class="wrow"><div class="wico">${w.ico}</div><div class="wi"><strong>${w.n}</strong><span>${w.d}</span></div><span class="wrk ${rkCls(w.rk)}">${w.rk}</span></div>`).join('')}
+  <div class="slbl">Artifact Seti</div>
+  ${c.artifacts.map(a=>`<div class="arow"><div class="aico">🏺</div><div class="ai"><strong>${a.n}</strong><span>${a.d}</span></div></div>`).join('')}
+  <div class="slbl">Stat Öncelikleri</div>
+  <div class="sgrid">${c.stats.map(s=>`<div class="sbox"><div class="sl">${s.l}</div><div class="sv">${s.v}</div><div class="sp">${s.p}</div></div>`).join('')}</div>`;
+}
+function panelMats(c){
+  const m=c.materials;
+  return`<div class="slbl">Kasılma Materyalleri</div>
+  <p style="font-size:.74rem;color:var(--tx2);margin-bottom:.9rem;line-height:1.6">Karakteri 90/90 kasımak için gereken materyaller ve nerede bulunduğu:</p>
+  <div class="mat-grid">
+    <div class="mat-card"><div class="mat-ico">${m.boss.ico}</div><div class="mat-info"><strong>Boss Materyali</strong><span>${m.boss.n}</span><div class="mat-where">📍 ${m.boss.where}</div></div></div>
+    <div class="mat-card"><div class="mat-ico">${m.gem.ico}</div><div class="mat-info"><strong>Elemental Gem</strong><span>${m.gem.n}</span><div class="mat-where">📍 ${m.gem.where}</div></div></div>
+    <div class="mat-card"><div class="mat-ico">${m.mat.ico}</div><div class="mat-info"><strong>Bölge Materyali</strong><span>${m.mat.n}</span><div class="mat-where">📍 ${m.mat.where}</div></div></div>
+    <div class="mat-card"><div class="mat-ico">${m.mob.ico}</div><div class="mat-info"><strong>Düşman Materyali</strong><span>${m.mob.n}</span><div class="mat-where">📍 ${m.mob.where}</div></div></div>
+  </div>
+  <div class="slbl">Yetenek Kasma Materyalleri</div>
+  <div style="background:var(--bg3);border:1px solid var(--br);border-radius:11px;padding:.85rem 1rem;font-size:.76rem;color:var(--tx2);line-height:1.75">
+    <p>🔰 <strong style="color:var(--tx)">Pazar / Pazartesi / Perşembe:</strong> Mondstadt/Liyue kitapları</p>
+    <p>🔰 <strong style="color:var(--tx)">Salı / Cuma:</strong> Inazuma/Sumeru kitapları</p>
+    <p>🔰 <strong style="color:var(--tx)">Çarşamba / Cumartesi:</strong> Fontaine/Natlan kitapları</p>
+    <p style="margin-top:.5rem">📖 Talent materyal kitapları <strong style="color:var(--a)">Karanlık Vadiler (Abyssal Domains)</strong>'den elde edilir.</p>
+    <p>👑 <strong style="color:var(--gold)">Crown of Insight</strong> etkinliklerden veya Sacred Sakura ağacından alınır.</p>
+  </div>`;
+}
+function panelConst(c){
+  return`<div class="slbl">Constellation</div>
+  <p style="font-size:.72rem;color:var(--tx2);margin-bottom:.85rem">🔑 Altın kenarlı = öncelikli constellation.</p>
+  <div class="congrid">${c.constellations.map((cn,i)=>`<div class="coni${cn.pri?' pri':''}"><div class="conhd"><div class="cnum">C${i+1}</div><div class="cnn">${cn.n}</div>${cn.badge?`<span class="cbdg">${cn.badge}</span>`:''}</div><div class="cdsc">${cn.d}</div></div>`).join('')}</div>`;
+}
+function panelTeams(c){
+  return`<div class="slbl">Takım Kompozisyonları</div>${c.teams.map(t=>`<div class="team"><div class="team-ttl">🌟 ${t.name}</div><div class="tslots">${t.slots.map(s=>`<div class="tsl"><div class="tsl-av">${s.av}</div><div class="tsl-n">${s.n}</div><div class="tsl-r">${s.r}</div></div>`).join('')}</div><div class="team-desc">${t.desc}</div></div>`).join('')}`;
+}
+function panelTips(c){
+  return`<div class="slbl">İpuçları & Oynanış</div><ul class="tlist">${c.tips.map(t=>`<li class="tip"><div class="tipico">${t.ico}</div><div><strong>${t.t}</strong><p>${t.d}</p></div></li>`).join('')}</ul>`;
+}
+
+/* ══════════════════════════════════════
+   COMMENTS
+══════════════════════════════════════ */
+function getComments(id){return lsGet('sw_c_'+id,[]);}
+function addComment(id){
+  const tx=document.getElementById('cmtTx').value.trim();
+  const nm=document.getElementById('cmtNm').value.trim()||'Anonim Gezgin';
+  if(!tx||tx.length<4){showToast('⚠️ En az 4 karakter');return;}
+  const cs=getComments(id);cs.unshift({id:Date.now(),n:nm,t:tx,d:new Date().toLocaleDateString('tr-TR'),l:0,ld:false});
+  lsSet('sw_c_'+id,cs);document.getElementById('cmtTx').value='';
+  showToast('✅ Yorum eklendi!');renderComments(id);
+}
+function likeComment(id,cid){
+  const cs=getComments(id),c=cs.find(x=>x.id===cid);if(!c)return;
+  c.ld=!c.ld;c.l=Math.max(0,c.l+(c.ld?1:-1));lsSet('sw_c_'+id,cs);renderComments(id);
+}
+function renderComments(id){
+  const el=document.getElementById('cmtBox');if(!el)return;
+  const cs=getComments(id);
+  el.innerHTML=`<div class="cmt-form"><textarea id="cmtTx" placeholder="Yorum veya öneri bırak…" rows="3"></textarea>
+    <div class="cmt-ff"><input type="text" class="cmt-ni" id="cmtNm" placeholder="İsmin (opsiyonel)"><button class="cmt-sub" onclick="addComment(${id})">💬 Gönder</button></div></div>
+  <div class="slbl">Yorumlar (${cs.length})</div>
+  ${cs.length?`<div class="cmt-list">${cs.map(c=>`<div class="cmt-item"><div class="cmt-hd"><span class="cmt-auth">🌿 ${c.n}</span><span class="cmt-dt">${c.d}</span></div><div class="cmt-tx">${c.t.replace(/</g,'&lt;')}</div><button class="cmt-lbtn${c.ld?' on':''}" onclick="likeComment(${id},${c.id})">${c.ld?'❤️':'🤍'} ${c.l||''} Beğen</button></div>`).join('')}</div>`:`<div class="cmt-empty">İlk yorumu sen yap! 🍃</div>`}`;
+}
+
+/* ══════════════════════════════════════
+   TOOLS MODAL
+══════════════════════════════════════ */
+function openTools(){
+  document.getElementById('toolsTabs').innerHTML=['🧮 Artifact','⏳ Banner'].map((t,i)=>`<button class="mtab${i===0?' on':''}" onclick="swToolTab(${i},this)">${t}</button>`).join('');
+  document.getElementById('toolsContent').innerHTML=`<div class="tpanel on" id="tt0">${buildArtCalc()}</div><div class="tpanel" id="tt1">${buildBannerPanel()}</div>`;
+  openOv('toolsOv');
+}
+function swToolTab(i,btn){document.querySelectorAll('#toolsTabs .mtab').forEach(b=>b.classList.remove('on'));document.querySelectorAll('.tpanel').forEach(p=>p.classList.remove('on'));btn.classList.add('on');document.getElementById('tt'+i).classList.add('on');}
+function closeTools(){closeOv('toolsOv');}
+function buildArtCalc(){return`<div class="slbl">Artifact CV Hesaplayıcı</div><p style="font-size:.74rem;color:var(--tx2);margin-bottom:.85rem">CV = <strong style="color:var(--a)">CRIT Rate × 2 + CRIT DMG</strong></p>
+  <div class="sinputs"><div class="sig"><label>CRIT Rate (%)</label><input type="number" id="ai-cr" placeholder="65"></div><div class="sig"><label>CRIT DMG (%)</label><input type="number" id="ai-cd" placeholder="140"></div><div class="sig"><label>EM</label><input type="number" id="ai-em" placeholder="150"></div><div class="sig"><label>Energy Recharge (%)</label><input type="number" id="ai-er" placeholder="180"></div></div>
+  <button class="calcbtn" onclick="calcArt()">📊 Hesapla</button>
+  <div class="cres" id="cres"></div>
+  <div class="slbl" style="margin-top:1rem">Referans</div>
+  <ul class="atips"><li class="atip">🟢 <span><strong>200+</strong> — Mükemmel</span></li><li class="atip">🟡 <span><strong>160-199</strong> — Çok İyi</span></li><li class="atip">🟠 <span><strong>120-159</strong> — Ortalama</span></li><li class="atip">🔴 <span><strong>120 altı</strong> — Zayıf</span></li></ul>`;}
+function calcArt(){
+  const cr=parseFloat(document.getElementById('ai-cr').value)||0,cd=parseFloat(document.getElementById('ai-cd').value)||0,em=parseFloat(document.getElementById('ai-em').value)||0,er=parseFloat(document.getElementById('ai-er').value)||100;
+  if(!cr&&!cd){showToast('⚠️ CRIT değerlerini gir');return;}
+  const cv=cr*2+cd;let cl='r',lb='Zayıf 😢';if(cv>=200){cl='g';lb='Mükemmel! 🌟';}else if(cv>=160){cl='g';lb='Çok İyi 👍';}else if(cv>=120){cl='o';lb='Ortalama 😐';}
+  const pct=Math.min(100,cv/220*100);
+  document.getElementById('cres').classList.add('on');
+  document.getElementById('cres').innerHTML=`<div class="rrow"><span class="rlbl">CV Değeri</span><span class="rval ${cl}">${cv.toFixed(1)}</span></div>${er?`<div class="rrow"><span class="rlbl">Energy Recharge</span><span class="rval ${er>=160?'g':er>=130?'o':'r'}">${er.toFixed(1)}%</span></div>`:''}<div class="cvbar"><div class="cvfill" id="cvfill" style="width:0%"></div></div><div class="cvrtg">${lb}</div>`;
+  setTimeout(()=>{const f=document.getElementById('cvfill');if(f)f.style.width=pct+'%';},50);
+}
+function buildBannerPanel(){return`<div class="slbl">Banner Sayaçları</div>${BANNERS.map((b,i)=>{const d=b.end-new Date(),dy=Math.max(0,Math.floor(d/864e5)),h=Math.max(0,Math.floor((d%864e5)/36e5));return`<div class="team" style="margin-bottom:.55rem"><div style="display:flex;align-items:center;gap:.7rem;margin-bottom:.6rem"><div style="font-size:1.85rem">${b.ico}</div><div><div class="team-ttl" style="margin-bottom:.06rem">${b.n}</div><div style="font-size:.65rem;color:var(--tx2)">${b.lbl}</div></div></div><div class="bnr-timer" style="justify-content:center">${[['Gün',dy],['Saat',h],['Dak',Math.floor((d%36e5)/6e4)],['Sn',Math.floor((d%6e4)/1e3)]].map(([u,v])=>`<div class="tu"><div class="tv">${String(Math.max(0,v)).padStart(2,'0')}</div><div class="tl">${u}</div></div>`).join('')}</div></div>`;}).join('')}<p style="font-size:.68rem;color:var(--tx3);text-align:center;margin-top:.4rem">⚠️ Tarihler tahminidir.</p>`;}
+
+/* ══════════════════════════════════════
+   PAGE NAVIGATION
+══════════════════════════════════════ */
+function go(p){
+  document.querySelectorAll('.page').forEach(el=>el.classList.remove('on'));
+  document.getElementById('page-'+p).classList.add('on');
+  document.querySelectorAll('.nav-links button').forEach(b=>b.classList.remove('on'));
+  const nb=document.getElementById('nb-'+p);if(nb)nb.classList.add('on');
+  curPage=p;document.getElementById('navLinks').classList.remove('mob');
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(p==='tierlist')initTL();
+  else if(p==='weapons')renderWeapons();
+  else if(p==='regions')renderRegions();
+  else if(p==='news')renderNews();
+}
+
+/* ══════════════════════════════════════
+   TIERLIST
+══════════════════════════════════════ */
+const TIERS=['S','A','B','C','D'];
+function getTLS(){const s=lsGet('sw_tl',null);if(s)return s;return{S:[],A:[],B:[],C:[],D:[],unp:CHARS.map(c=>c.id)};}
+function saveTLS(s){lsSet('sw_tl',s);}
+function initTL(){
+  const s=getTLS();
+  const allPlaced=[...s.S,...s.A,...s.B,...s.C,...s.D,...s.unp];
+  CHARS.forEach(c=>{if(!allPlaced.includes(c.id))s.unp.push(c.id);});
+  renderTL(s);renderTLCS();
+}
+function renderTL(s){
+  document.getElementById('tlBoard').innerHTML=TIERS.map(t=>`<div class="tier-row t${t}"><div class="tier-lbl">${t}</div><div class="tier-chars" id="tl-${t}" ondragover="tlDO(event,'${t}')" ondrop="tlDrop(event,'${t}')" ondragleave="this.classList.remove('dov')">${(s[t]||[]).map(id=>tlCharHTML(id)).join('')}</div></div>`).join('');
+  document.getElementById('tlUnp').innerHTML=(s.unp||[]).map(id=>tlCharHTML(id)).join('');
+}
+function tlCharHTML(id){const c=CHARS.find(x=>x.id===id);if(!c)return'';return`<div class="tlc" draggable="true" data-id="${id}" ondragstart="tlDS(event,${id})" title="${c.name}"><div class="tav">${c.av}</div><div class="tn">${c.name}</div></div>`;}
+function tlDS(e,id){tlDragId=id;setTimeout(()=>e.target.classList.add('drag'),0);}
+function tlDO(e,t){e.preventDefault();const el=document.getElementById('tl-'+t)||document.getElementById('tlUnp');if(el)el.classList.add('dov');}
+function tlDrop(e,t){
+  e.preventDefault();
+  document.querySelectorAll('.tier-chars,.tl-unp>div').forEach(el=>el.classList.remove('dov'));
+  if(!tlDragId)return;
+  const s=getTLS();TIERS.forEach(tr=>{s[tr]=(s[tr]||[]).filter(x=>x!==tlDragId);});s.unp=s.unp.filter(x=>x!==tlDragId);
+  if(t==='unp')s.unp.push(tlDragId);else{if(!s[t])s[t]=[];s[t].push(tlDragId);}
+  saveTLS(s);renderTL(s);tlDragId=null;
+}
+function resetTL(){lsSet('sw_tl',null);initTL();showToast('🔄 Sıfırlandı!');}
+function renderTLCS(){
+  const cv={1:{S:42},2:{S:38},3:{S:35},4:{S:40},5:{S:33},6:{S:45}};
+  const mx=Math.max(...CHARS.map(c=>cv[c.id]?.S||0));
+  document.getElementById('tlCS').innerHTML=CHARS.sort((a,b)=>(cv[b.id]?.S||0)-(cv[a.id]?.S||0)).map(c=>{const v=cv[c.id]?.S||0,pct=mx?Math.round(v/mx*100):0;return`<div class="tl-cs-row"><div class="tl-cs-c"><div class="tl-cs-av">${c.av}</div><div class="tl-cs-n">${c.name}</div></div><div class="tl-bar-w"><div class="tl-bar" style="width:${pct}%"></div></div><div class="tl-pct">${pct}%</div></div>`;}).join('');}
+
+/* ══════════════════════════════════════
+   WEAPONS
+══════════════════════════════════════ */
+function renderWeapons(){
+  const types=['Tümü',...new Set(WEAPONS.map(w=>w.t))];
+  document.getElementById('wTypeF').innerHTML=types.map(t=>`<button class="fb${wFilter===(t==='Tümü'?'all':t)?' on':''}" onclick="setWF('${t}',this)">${t}</button>`).join('');
+  const fw=wFilter==='all'?WEAPONS:WEAPONS.filter(w=>w.t===wFilter);
+  document.getElementById('wGrid').innerHTML=fw.map(w=>`<div class="wcard"><div class="wico-w w${w.s}">${w.ico}</div><div style="flex:1;min-width:0"><div class="wn">${w.n}</div><div class="wstars">${'⭐'.repeat(Math.min(w.s,5))}</div><div class="wtype">🗡️ ${w.t}</div><div class="wstats"><div class="wsc">ATK <span>${w.atk}</span></div><div class="wsc">${w.sub}</div></div><div class="wdesc">${w.d}</div><div class="wbest">🎯 En İyi: ${w.best.join(', ')}</div></div></div>`).join('');
+}
+function setWF(t,btn){wFilter=t==='Tümü'?'all':t;document.querySelectorAll('#wTypeF .fb').forEach(b=>b.classList.remove('on'));btn.classList.add('on');renderWeapons();}
+
+/* ══════════════════════════════════════
+   REGIONS
+══════════════════════════════════════ */
+function renderRegions(){
+  document.getElementById('rgrid').innerHTML=REGIONS.map(r=>`<div class="rcard" onclick="showToast('📍 ${r.n} detaylı rehberi yakında!')">
+    <div class="rbnr" style="background:${r.grad}"><div class="rbnr-inner"><span class="rico">${r.ico}</span><div class="rname">${r.n}</div></div></div>
+    <div class="rbody"><div class="relem" style="color:${r.ec}">${ei(r.el)} ${r.el} Bölgesi</div><div class="rdesc">${r.desc}</div>
+    <div class="rhighlights">${r.hl.slice(0,4).map(h=>`<span class="rhl">📍 ${h}</span>`).join('')}</div>
+    <div class="rchars">👥 ${r.chars.slice(0,5).join(', ')}${r.chars.length>5?' +'+(r.chars.length-5)+' daha':''}</div></div></div>`).join('');
+}
+
+/* ══════════════════════════════════════
+   NEWS
+══════════════════════════════════════ */
+function renderNews(){
+  // Read from admin panel if available
+  const adminNews=lsGet('sw_admin_news',null);
+  const activeNews=adminNews&&adminNews.length?adminNews:NEWS;
+  const types=[{k:'all',l:'Tümü'},{k:'patch',l:'Patch Notes'},{k:'event',l:'Etkinlikler'},{k:'char',l:'Yeni Karakterler'},{k:'collab',l:'Kolaborasyonlar'}];
+  document.getElementById('newsFlt').innerHTML=types.map(t=>`<button class="fb${nFilter===t.k?' on':''}" onclick="setNF('${t.k}',this)">${t.l}</button>`).join('');
+  const fn=nFilter==='all'?activeNews:activeNews.filter(n=>n.type===nFilter);
+  document.getElementById('newsGrid').innerHTML=fn.map(n=>`<div class="ncard" onclick="showToast('📰 ${(n.title||'').substring(0,30)}…')">
+    <div class="ntop"><span class="nbadge ${n.cls}">${n.lbl}</span><span class="ndate">📅 ${n.date}</span></div>
+    <div class="ntitle">${n.title}</div><div class="nexc">${n.exc}</div>
+    <div class="ntags">${n.tags.map(t=>`<span class="ntag">#${t}</span>`).join('')}</div>
+    <div class="nmore">Devamını Oku →</div></div>`).join('');
+}
+function setNF(k,btn){nFilter=k;document.querySelectorAll('#newsFlt .fb').forEach(b=>b.classList.remove('on'));btn.classList.add('on');renderNews();}
+
+/* ══════════════════════════════════════
+   OVERLAY HELPERS (NO history API!)
+══════════════════════════════════════ */
+function openOv(id){document.getElementById(id).classList.add('open');document.body.style.overflow='hidden';}
+function closeOv(id){document.getElementById(id).classList.remove('open');if(!document.querySelectorAll('.overlay.open').length)document.body.style.overflow='';}
+// click outside — safe after DOM loaded
+setTimeout(()=>{
+  document.querySelectorAll('.overlay').forEach(ov=>{
+    ov.addEventListener('click',e=>{if(e.target===ov){const id=ov.id;if(id==='charOv')closeChar();else if(id==='toolsOv')closeTools();else if(id==='cmpOv')closeCmp();else closeOv(id);}});
+  });
+  const pov=document.getElementById('pickerOv');
+  if(pov)pov.addEventListener('click',e=>{if(e.target===pov)pov.classList.remove('open');});
+},0);
+document.addEventListener('keydown',e=>{
+  if(e.key!=='Escape')return;
+  if(document.getElementById('pickerOv').classList.contains('open'))document.getElementById('pickerOv').classList.remove('open');
+  else if(document.getElementById('cmpOv').classList.contains('open'))closeCmp();
+  else if(document.getElementById('toolsOv').classList.contains('open'))closeTools();
+  else if(document.getElementById('charOv').classList.contains('open'))closeChar();
+  if(notifOpen){notifOpen=false;document.getElementById('npanel').classList.remove('open');}
+});
+
+/* ══════════════════════════════════════
+   MISC
+══════════════════════════════════════ */
+function toggleMenu(){document.getElementById('navLinks').classList.toggle('mob');}
+/* Read admin settings and apply to page */
+function applyAdminSettings(){
+  // Hero content
+  const h=lsGet('sw_admin_hero',null);
+  if(h){
+    const hb=document.querySelector('.hero-badge');
+    if(hb&&h.badge)hb.innerHTML='🌬️ &nbsp; '+h.badge;
+    const h1=document.querySelector('.hero h1');
+    if(h1&&(h.t1||h.t2||h.t3))h1.innerHTML=(h.t1||'Güçlen,')+'<br><span class="grad">'+(h.t2||"Teyvat'ı")+'</span> '+(h.t3||'Fethet');
+    const hs=document.querySelector('.hero-sub');
+    if(hs&&h.sub)hs.textContent=h.sub;
+    const stats=document.querySelectorAll('.hero-stat');
+    if(stats[0]&&h.s1v){stats[0].querySelector('strong').textContent=h.s1v;stats[0].querySelector('span').textContent=h.s1l;}
+    if(stats[1]&&h.s2v){stats[1].querySelector('strong').textContent=h.s2v;stats[1].querySelector('span').textContent=h.s2l;}
+    if(stats[2]&&h.s3v){stats[2].querySelector('strong').textContent=h.s3v;stats[2].querySelector('span').textContent=h.s3l;}
+    const ft=document.querySelector('footer p');
+    if(ft&&h.footer)ft.textContent=h.footer;
+  }
+  // Theme colors
+  const t=lsGet('sw_admin_theme',null);
+  if(t){
+    const root=document.getElementById('root');
+    Object.entries(t).forEach(([k,v])=>root.style.setProperty(k,v));
+  }
+  // Feature toggles
+  const tg=lsGet('sw_admin_toggles',null);
+  if(tg){
+    if(tg.particles===false){ptclOn=false;document.getElementById('ptcls').innerHTML='';}
+    if(tg.discord===false){const dw=document.getElementById('dwWrap');if(dw)dw.closest('.strip').style.display='none';}
+    if(tg.banners===false){const bg=document.getElementById('bnrGrid');if(bg)bg.closest('.strip').style.display='none';}
+    if(tg.recent===false){const rs=document.getElementById('recentSec');if(rs)rs.style.display='none';}
+    if(tg.loader===false){document.getElementById('loader').classList.add('gone');}
+  }
+}
+
+/* ══════════════════════════════════════
+   INIT
+══════════════════════════════════════ */
+initTheme();
+initParticles();
+initPWA();
+initNotifs();
+initDiscord();
+renderBanners();
+renderRecent();
+render();
+updateCmpBtn();
+applyAdminSettings();
+initWelcome();
+setTimeout(initReveal,600);
+
+/* ─── WELCOME ─── */
+let wsPickedColor=null;
+function initWelcome(){
+  if(lsGet('sw_welcomed',false)){const ws=document.getElementById('welcomeScreen');if(ws)ws.classList.add('done');return;}
+  const se=document.getElementById('wsStars');
+  if(se){for(let i=0;i<55;i++){const s=document.createElement('div');s.className='ws-star';s.style.cssText='left:'+Math.round(Math.random()*100)+'%;top:'+Math.round(Math.random()*100)+'%;--d:'+(2+Math.random()*4).toFixed(1)+'s;animation-delay:'+Math.random().toFixed(2)+'s';se.appendChild(s);}}
+}
+function pickEl(btn,el,color){
+  document.querySelectorAll('.ws-el').forEach(b=>b.classList.remove('picked'));
+  btn.classList.add('picked');wsPickedColor=color;
+  document.getElementById('root').style.setProperty('--a',color);
+}
+function startJourney(){
+  const ws=document.getElementById('welcomeScreen');if(!ws)return;
+  if(wsPickedColor){const t=lsGet('sw_admin_theme',{});t['--a']=wsPickedColor;lsSet('sw_admin_theme',t);}
+  lsSet('sw_welcomed',true);ws.classList.add('out');
+  setTimeout(()=>ws.classList.add('done'),950);
+}
+
+/* ─── REVEAL ANIMATIONS ─── */
+function initReveal(){
+  if(!('IntersectionObserver' in window))return;
+  const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:.08,rootMargin:'0px 0px -25px 0px'});
+  document.querySelectorAll('.strip,.rcard,.ncard,.bnr-card').forEach((el,i)=>{
+    el.classList.add('reveal');
+    if(i%3===1)el.classList.add('reveal-delay-1');
+    else if(i%3===2)el.classList.add('reveal-delay-2');
+    obs.observe(el);
+  });
+}
+</script>
+</body>
+</html>
